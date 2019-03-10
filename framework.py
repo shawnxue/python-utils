@@ -10,7 +10,7 @@ import consul
 
 class Consul_Driver:
     def __init__ ( self ):
-        self.token = "test"
+        self.token = "haha"
         self.server = "127.0.0.1"
         self.port = 32781
 
@@ -65,10 +65,10 @@ class Token:
         response_cred = {}
         if self.source == "gitlab" and self.role == "ci_metrics":
             self.user = "pass"
-            self. token = "q7nAi_wbuHnA4vhSBJUy"
+            self. token = "haha"
         elif self.source == "teamcity" and self.role == "ci_metrics":
-            self.user = "cimetrics"
-            self.token = "test1234"
+            self.user = "metrics"
+            self.token = "haha"
         else:
             raise ValueError("Invalid productname or role")
         response_cred[self.user] = self.token
@@ -91,7 +91,7 @@ class Metrics_Request:
             return api_request.json()
         else:
             return False
-class ApptioCIMetric_SCM_GitLab:
+class CiCIMetric_SCM_GitLab:
     def __init__(self, host, token,https=True):
         self.api_url = "/api/v3"
         self.headers = {'Accept': 'application/json' , 'Content-type': 'application/json'}
@@ -141,11 +141,11 @@ class ApptioCIMetric_SCM_GitLab:
             fields[ "relative_path" ] = relative_path
             fields[ "author_email" ] = commit[ "author_email" ]
             fields[ "short_id" ] = commit[ "short_id" ]
-            datapoint_json = Measurement ( "Apptio_CI_GitLab_Commits" , tags , time , fields )
+            datapoint_json = Measurement ( "Ci_CI_GitLab_Commits" , tags , time , fields )
             measurement_json = datapoint_json.get_data ( )
-            dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "ApptioCIMetrics" )
+            dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "CiCIMetrics" )
             dbclient.insert_datapoint ( measurement_json )
-class ApptioCIMetric_Build_TeamCity:
+class CiCIMetric_Build_TeamCity:
     def __init__(self, host, username, token,https=True ):
         self.api_url = "/httpAuth/app/rest"
         self.headers = {'Accept': 'application/json' , 'Content-type': 'application/json'}
@@ -176,12 +176,12 @@ class ApptioCIMetric_Build_TeamCity:
         if json_output != False:
             if "problemOccurrences" in json_output.keys ( ):
                 for errorcode in self.request_problemOccurrences ( BuildId ):
-                    Apptio_CI_Build_Error = [
+                    Ci_CI_Build_Error = [
                         {
-                            "measurement": "Apptio_CI_Build_Errors" ,
+                            "measurement": "Ci_CI_Build_Errors" ,
                             "tags": {
                                 "Product": "TeamCity" ,
-                                "Server": "builds.apptio.com" ,
+                                "Server": "builds.ci.com" ,
                                 "BuildID": 0 ,
                                 "Project": "Test"
                             } ,
@@ -189,59 +189,59 @@ class ApptioCIMetric_Build_TeamCity:
                             "fields": {}
                         }
                     ]
-                    Apptio_CI_Build_Error[ 0 ][ "tags" ][ "BuildID" ] = BuildId
-                    Apptio_CI_Build_Error[ 0 ][ "tags" ][ "Project" ] = json_output[ "buildType" ][ "projectId" ]
-                    Apptio_CI_Build_Error[ 0 ][ "time" ] = datetime.strptime ( json_output[ "finishDate" ] ,
+                    Ci_CI_Build_Error[ 0 ][ "tags" ][ "BuildID" ] = BuildId
+                    Ci_CI_Build_Error[ 0 ][ "tags" ][ "Project" ] = json_output[ "buildType" ][ "projectId" ]
+                    Ci_CI_Build_Error[ 0 ][ "time" ] = datetime.strptime ( json_output[ "finishDate" ] ,
                                                                                "%Y%m%dT%H%M%S+0000" ).strftime (
                         "%Y%m%dT%H%M%S+0000" )
-                    Apptio_CI_Build_Error[ 0 ][ "fields" ][ "error" ] = errorcode[ "type" ]
-                    #dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "ApptioCIMetrics" )
-                    #dbclient.insert_datapoint ( Apptio_CI_Build_Error )
+                    Ci_CI_Build_Error[ 0 ][ "fields" ][ "error" ] = errorcode[ "type" ]
+                    #dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "CiCIMetrics" )
+                    #dbclient.insert_datapoint ( Ci_CI_Build_Error )
                     #del dbclient
-                    print Apptio_CI_Build_Error
+                    print Ci_CI_Build_Error
 
 
-            ##### Apptio_CI_Build_Queue
+            ##### Ci_CI_Build_Queue
             if "queuedDate" in json_output.keys ( ) and "startDate" in json_output.keys ( ) and "finishDate" in json_output.keys ( ):
-                Apptio_CI_Build_Queue = [
+                Ci_CI_Build_Queue = [
                     {
-                        "measurement": "Apptio_CI_Build_Queue" ,
+                        "measurement": "Ci_CI_Build_Queue" ,
                         "tags": {
                             "Product": "TeamCity" ,
-                            "Server": "builds.apptio.com"} ,
+                            "Server": "builds.ci.com"} ,
                         "time": "" ,
                         "fields": {}
                     }
                 ]
-                Apptio_CI_Build_Queue[ 0 ][ "tags" ][ "Project" ] = json_output[ "buildType" ][ "projectId" ]
-                Apptio_CI_Build_Queue[ 0 ][ "time" ] = json_output[ "queuedDate" ]
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "BuildID" ] = BuildId
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "QueueToBuildStart" ] = (
+                Ci_CI_Build_Queue[ 0 ][ "tags" ][ "Project" ] = json_output[ "buildType" ][ "projectId" ]
+                Ci_CI_Build_Queue[ 0 ][ "time" ] = json_output[ "queuedDate" ]
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "BuildID" ] = BuildId
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "QueueToBuildStart" ] = (
                     datetime.strptime ( json_output[ "startDate" ] , "%Y%m%dT%H%M%S+0000" ) - datetime.strptime (
                         json_output[ "queuedDate" ] , "%Y%m%dT%H%M%S+0000" )).seconds
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "BuildStartToBuildEnd" ] = (
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "BuildStartToBuildEnd" ] = (
                     datetime.strptime ( json_output[ "finishDate" ] , "%Y%m%dT%H%M%S+0000" ) - datetime.strptime (
                         json_output[ "startDate" ] , "%Y%m%dT%H%M%S+0000" )).seconds
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "queuedDate" ] = datetime.strptime (
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "queuedDate" ] = datetime.strptime (
                     json_output[ "queuedDate" ] , "%Y%m%dT%H%M%S+0000" ).strftime ( "%Y%m%dT%H%M%S+0000" )
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "startDate" ] = datetime.strptime (
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "startDate" ] = datetime.strptime (
                     json_output[ "startDate" ] , "%Y%m%dT%H%M%S+0000" ).strftime ( "%Y%m%dT%H%M%S+0000" )
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "finishDate" ] = datetime.strptime (
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "finishDate" ] = datetime.strptime (
                     json_output[ "finishDate" ] , "%Y%m%dT%H%M%S+0000" ).strftime ( "%Y%m%dT%H%M%S+0000" )
-                Apptio_CI_Build_Queue[ 0 ][ "fields" ][ "status" ] = json_output[ "status" ]
+                Ci_CI_Build_Queue[ 0 ][ "fields" ][ "status" ] = json_output[ "status" ]
 
-                #dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "ApptioCIMetrics" )
-                #dbclient.insert_datapoint ( Apptio_CI_Build_Queue )
+                #dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "CiCIMetrics" )
+                #dbclient.insert_datapoint ( Ci_CI_Build_Queue )
                 #del dbclient
-                print Apptio_CI_Build_Queue
+                print Ci_CI_Build_Queue
 
-            ##### Apptio Build Result
+            ##### Ci Build Result
             if "queuedDate" in json_output.keys ( ) and "startDate" in json_output.keys ( ) and "finishDate" in json_output.keys ( ):
                 BuildResult = [
-                    {"measurement": "Apptio_CI_Build_Result" ,
+                    {"measurement": "Ci_CI_Build_Result" ,
                      "tags":
                          {"Product": "TeamCity" ,
-                          "Server": "builds.apptio.com" ,
+                          "Server": "builds.ci.com" ,
                           "Project": "Demo" ,
                           "BuildID": "1234" ,
                           "status": "SUCCESSFUL"
@@ -258,7 +258,7 @@ class ApptioCIMetric_Build_TeamCity:
                 BuildResult[ 0 ][ "tags" ][ "Project" ] = json_output[ "buildType" ][ "projectId" ]
                 BuildResult[ 0 ][ "tags" ][ "BuildID" ] = BuildId
                 BuildResult[ 0 ][ "fields" ][ "status" ] = json_output[ "status" ]
-                #dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "ApptioCIMetrics" )
+                #dbclient = MetricsDB ( "localhost" , "8086" , "admin" , "admin" , "CiCIMetrics" )
                 #dbclient.insert_datapoint ( BuildResult )
                 #del dbclient
                 print BuildResult
@@ -275,8 +275,8 @@ def write_all_measurements():
     auth = Token("gitlab","ci_metrics")
     cred = auth.get_token()
     username, token = cred.popitem()
-    host = "gitlab.belus.apptio.lan"
-    test = ApptioCIMetric_SCM_GitLab(host,token)
+    host = "gitlab.bel.ci.lan"
+    test = CiCIMetric_SCM_GitLab(host,token)
     result = test.get_projects_all ( )
     for project in result:
         test.write_commit_by_repository ( project , result[ project ] )
@@ -284,7 +284,7 @@ def write_build_measurements():
     auth = Token("teamcity","ci_metrics")
     cred = auth.get_token()
     username, token = cred.popitem()
-    test = ApptioCIMetric_Build_TeamCity("builds.apptio.com", username, token)
+    test = CiCIMetric_Build_TeamCity("builds.ci.com", username, token)
     for buildID in range(55000,55264 ):
         test.process_build_results(buildID)
 
