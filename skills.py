@@ -24,7 +24,7 @@ config.has_option('mysqld', 'binlog')
 value = config.get('mysqld', 'binlog')
 
 # do a API call, and get response, convert response to json
-requests.packages.urllib3.disable_warnings ( InsecureRequestWarning )
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 cred = requests.HTTPBasicAuth("username", "password/token")
 headers = {"": "", "": ""}
 api_resp = requests.get(url='host + request_url + API_endpoint' , auth=cred, headers=headers, verify=False)
@@ -39,7 +39,7 @@ ci_build_queue[ 0 ][ "fields" ][ "QueueToBuildStart" ] = (
                     datetime.strptime ( json_output[ "startDate" ] , "%Y%m%dT%H%M%S+0000" ) - datetime.strptime (
                         json_output[ "queuedDate" ] , "%Y%m%dT%H%M%S+0000" )).seconds
 
-time = parser.parse ( commit[ "created_at" ] ).strftime ( "%Y%m%dT%H%M%S+0000" )
+time = parser.parse(commit[ "created_at" ] ).strftime ( "%Y%m%dT%H%M%S+0000")
 
 # create json body
 json_body = [{'measurement': '' , 'tags': {} , 'time': '' , 'fields': {}}]
@@ -75,11 +75,11 @@ try:
     cursor = cnx.cursor()
 except mysql.connector.Error as err:
     if err.errno == mysql.errorcode.ER_ACCESS_DENIED_ERROR:
-        print "Credential is wrong"
+        print("Credential is wrong")
     elif err.errno == mysql.errorcode.ER_BAD_DB_ERROR:
-        print "DB does not exist"
+        print("DB does not exist")
     else:
-        print err
+        print(err)
 else:
     cnx.close()
 
@@ -180,10 +180,9 @@ ON suppliers.supplier_id = orders.supplier_id;
 # or you can use this
 ''.join(reversed('hello world'))
 a = [1, 2, 3, 4, 5, 6, 7, 8]
-print a[::-1] # [8, 7, 6, 5, 4, 3, 2, 1]
+print(a[::-1]) # [8, 7, 6, 5, 4, 3, 2, 1]
 
 datetime.now().strftime("%A, %d. %B %Y %I:%M:%S %p: ") # Wednesday, 21. November 2012 03:06:05 PM
-
 
 def splitStringToNumber(s):
     return tuple(int(x) for x in s.split('.'))
@@ -199,9 +198,9 @@ def tryint(x):
 # this function handle the case that string like this: T920X23.2d3.23dd98
 def splitStringToCharacters(s):
     import re
-    return tuple(tryint(x) for x in re.split('([0-9]+)', s))
+    return tuple(tryint(x) for x in re.split(r'([0-9]+)', s))
 
-# What key does is it provides a way to specify a function that returns what you would like your items sorted by.
+# What key does is that it provides a way to specify a function that returns what you would like your items sorted by.
 # The function gets an "invisible" argument passed to it that represents an item in the list,
 # and returns a value that you would like to be the item's "key" for sorting.
 
@@ -220,7 +219,7 @@ def getFileChecksum(filePath):
 
 # function to get immediate subdirectories of a directory, return a list of immediate subdirectory's names, just name, not full path
 def getImmediateSubdirectories(directory):
-    return os.walk(directory).next()[1]
+    return os.walk(directory)[1]
 
 # function to get files (full path) from a target directory and its sub dir.
 # parameters: Use *arg to pass non-keyworded variable-length argument list, which is used to filter unwanted files
@@ -262,20 +261,22 @@ answers = ['lancelot', 'the holy grail', 'blue']
 # combined loop
 # after zip two lists, the result is still a same-size list, but each member in the new list is a tuple
 for q, a in zip(questions, answers):
-    print "What is your {0}? It is {1}".format(q, a)
+  print(f"What is your {0}? It is {1}".format(q, a))
 # sequence loop
 for i, v in enumerate(["sd", "adf", "23423"]): # i is index, v is value
-    print "index is %s, value is %s" % (i, v)
+  print(f"index is %s, value is %s" % (i, v))
 # no sequence loop
 for q in questions:
-    print q
+  print(q)
 # sorting
 sorted([5, 2, 3, 1, 4]) # [1, 2, 3, 4, 5]
 
 sorted("This is a test string from Andrew".split(), key=str.lower) # ['a', 'Andrew', 'from', 'is', 'string', 'test', 'This']
 
-student_tuples = [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10),]
+student_tuples = [('john', 'A', 15), ('jane', 'A', 12), ('dave', 'B', 10),]
 sorted(student_tuples, key=lambda student: student[2]) # [('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+# sorting by test score first. If scores are same, then sorting by age
+sorted(student_tuples, key=lambda student: (student[1], student[2])) # [('jane', 'A', 12), ('john', 'A', 15), ('dave', 'B', 10)]
 
 # __repr__ function tells Python how we want the object to be represented as.
 # In more complex terms, it tells the interpreter how to display the object when it is printed to the screen.
@@ -294,7 +295,7 @@ class Student:
             return self.age.__cmp__(other.age)
     # another way to override this function, to handle the case of different obj into one list
     def __cmp__(self, other):
-        if hasattr(other, 'getKey')
+        if hasattr(other, 'getKey'):
             return self.getKey().__cmp__(other.getKey())
     def getKey(self):
         return self.age
@@ -369,8 +370,9 @@ var_l = json.loads('["foo", {"bar":["baz", null, 1.0, 2]}]') # return a list: [u
 dict([('sape', 4139), ('guido', 4127), ('jack', 4098)]) # convert list (each item is a tuple)to dict, {'sape': 4139, 'jack': 4098, 'guido': 4127}
 {x: x**2 for x in (2, 4, 6)} #{2: 4, 4: 16, 6: 36}
 d = {'Name': 'Zara', 'Age': 7, 'Class': 'First'}
-d.keys() # get the list of keys
-d.values() # get the list of values
+list(d.keys()) # get the list of keys
+list(d.values()) # get the list of values
+d.items() # a list of k-v pair, each item in the list is a tuple
 del d['Name']; # remove entry with key 'Name'
 d.clear();     # remove all entries in dict
 del d ;        # delete entire dictionary
@@ -391,14 +393,16 @@ my_dict = [dict(zip(GIT_COMMIT_FIELDS, row)) for row in logfile]
 import operator
 x = {1: 2, 3: 4, 4: 3, 2: 1, 0: 0}
 sorted_x_list = sorted(x.items(), key=operator.itemgetter(1)) # sorted_x is a list, each item is tuple
+sorted_x_list = sorted(x.items(), key=lambda item:item[1]) # sorted_x is a list, each item is tuple
 
 mydict = {'carl':40,
           'alan':2,
           'bob':1,
           'danny':3}
 # sort a dict by value (Python 2.4 or greater):
-for key, value in sorted(mydict.iteritems(), key=lambda (k,v): (v,k)):
-    print "%s: %s" % (key, value)
+# for key, value in sorted(mydict.items(), key=lambda (k,v): (v,k)):
+for key, value in sorted(mydict.items(), key=lambda item:item[1]):
+    print("%s: %s" % (key, value))
 # sort a dict by keys (Python 2.4 or greater):
 for key in sorted(mydict.keys()) # or sorted(mydict.iterkeys)
     print "%s: %s" % (key, mydict[key])
@@ -442,7 +446,8 @@ u = t, (1, 2, 3, 4, 5) # nested tuple, ((12345, 54321, 'hello!'), (1, 2, 3, 4, 5
 *: the previous character can be matched zero or more times. e.g. a[bcd]*b, matches the letter 'a', zero or more letters from the class [bcd], ends with a 'b'.
 +: the previous character can be matched one or more times.
 ?:the previous character can be matched either once or zero times, e.g. home-?brew matches either homebrew or home-brew
-matched string   python string literals for this match     python raw string for this match
+'.': often used where you want to match “any character”
+matched string   python string literals for this match    python raw string for this match
 "\section"       "\\\\section"                            r"\\section"
 "ab*"            "ab*"                                    r"ab*"
 "\\w+\\s+\\1"    "\\w+\\s+\\1"                            r"\w+\s+\1"
@@ -460,7 +465,6 @@ not inside other strings
 \S: matches any non-whitespace character; this is equivalent to the class [^ \t\n\r\f\v]
 \w: Matches any alphanumeric character; this is equivalent to the class [a-zA-Z0-9]
 \W: Matches any non-alphanumeric character; this is equivalent to the class [^a-zA-Z0-9]
-'.': often used where you want to match “any character”
 [\s,.] is a character class that will match any whitespace character, or ',' or '.'
 '''
 import re
@@ -470,9 +474,9 @@ m = p.match("sdfalkjsd") # return an object m
 p = re.compile('goes')
 m = p.match( 'string goes here' )
 if m:
-    print 'Match found: ', m.group()
+    print('Match found: ', m.group())
 else:
-    print 'No match'
+    print('No match')
 p = re.compile('\d+')
 p.findall('12 drummers drumming, 11 pipers piping, 10 lords a-leaping') # ['12', '11', '10']
 itr = p.finditer('12 drummers drumming, 11 pipers piping, 10 lords a-leaping')
@@ -510,7 +514,7 @@ re.sub(r'\d+', hexrepl, 'Call 65490 for printing, 49152 for user code.')
 ord(<char>): # convert a character to an integer (ASCII value)
 chr(<integer>) # convert an integer (ASCII value to character)
 
-bin(<integer>) [2:] # convert integer to binary
+bin(<integer>)[2:] # convert integer to binary
 bin(6)[2:].zfill(8) # convert integer 6 to binary and make the binary string length 8
 '{0:08b}'.format(6) # same
 '''
@@ -522,6 +526,8 @@ b converts the number to its binary representation
 d converts the number to decimal
 '''
 "{0:08b},{1:08d}".format(6,6) # '00000110,00000006'
+# count the number of bit in a interger's binary representation
+len(bin(6)[2:]) # or <integer>.bit_length()
 
 class Person(object):
     def __init__(self, name, age):
@@ -532,7 +538,7 @@ class Person(object):
         return self.name == other.name and self.age == other.age
 
     def __repr__(self):
-        print "Person's name " + self.name + ", age is " + self.age
+        print(f"Person's name {self.name}, age is {self.age}")
 
     def __str__(self):
         return str(self.name + self.age)
@@ -721,8 +727,19 @@ zip(*matrix)
 [[row[i] for row in matrix]for i in range(4)] # 4 is column
 # option 2
 transposed = []
-for i in range(4): # 4 is column
-    transposed_row = []
+column_num = len(matrix[0])
+for i in range(column_num):
+    new_row = []
     for row in matrix:
-        transposed_row.append(row[i])
-    transposed.append(transposed_row)
+        new_row.append(row[i])
+    transposed.append(new_row)
+
+def numberToBase(n, b):
+    if n == 0:
+        return [0]
+    digits = []
+    while n:
+        digits.append(int(n % b))
+        n //=b
+    
+    return digits[::-1]
