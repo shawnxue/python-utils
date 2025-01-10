@@ -376,13 +376,13 @@ d.items() # a list of k-v pair, each item in the list is a tuple
 del d['Name']; # remove entry with key 'Name'
 d.clear();     # remove all entries in dict
 del d ;        # delete entire dictionary
-print [k for k in d.iterkeys()]
-print [v for v in d.itervalues()]
-print [x for x in d.iteritems()] # [(k1,v1), (k2,v2), (k3,v3)]
+print([k for k in d.iterkeys()])
+print([v for v in d.itervalues()])
+print([x for x in d.iteritems()] )# [(k1,v1), (k2,v2), (k3,v3)]
 for k, v in d.items():
     print (k,v)
-print "key is {0}, value is {1}".format(k, v) for k, v in d.iteritems()
-print 'key is %s, value is %s' %  (k, v for k, v in d.iteritems())
+print("key is {0}, value is {1}".format(k, v) for k, v in d.iteritems())
+print('key is %s, value is %s' %  (k, v for k, v in d.iteritems()))
 var = "abcde"
 my_dict = {}.fromkeys(var, 0) # {'a': 0, 'c': 0, 'b': 0, 'd': 0, 'e': 0}
 GIT_COMMIT_FIELDS = ['id', 'author_name', 'author_email', 'date', 'message']
@@ -392,8 +392,8 @@ my_dict = [dict(zip(GIT_COMMIT_FIELDS, row)) for row in logfile]
 # sort a dict
 import operator
 x = {1: 2, 3: 4, 4: 3, 2: 1, 0: 0}
-sorted_x_list = sorted(x.items(), key=operator.itemgetter(1)) # sorted_x is a list, each item is tuple
-sorted_x_list = sorted(x.items(), key=lambda item:item[1]) # sorted_x is a list, each item is tuple
+sorted_x_list = sorted(x.items(), key=operator.itemgetter(1)) # sorted_x_list is a list, each item is tuple
+sorted_x_list = sorted(x.items(), key=lambda item:item[1]) # sorted_x_list is a list, each item is tuple
 
 mydict = {'carl':40,
           'alan':2,
@@ -404,13 +404,12 @@ mydict = {'carl':40,
 for key, value in sorted(mydict.items(), key=lambda item:item[1]):
     print("%s: %s" % (key, value))
 # sort a dict by keys (Python 2.4 or greater):
-for key in sorted(mydict.keys()) # or sorted(mydict.iterkeys)
-    print "%s: %s" % (key, mydict[key])
+for key in sorted(mydict.keys()): # or sorted(mydict.iterkeys)
+    print ("%s: %s" % (key, mydict[key]))
 # sort a dict by keys (Python older than 2.4)
 keylist = my_dict.keys()
-sorted(keylist)
-for key in keylist:
-    print "%s: %s" % (key, my_dict[key])
+for key in sorted(keylist):
+    print ("%s: %s" % (key, my_dict[key]))
 
 # ways for dict copy
 python -m timeit -s "d={1:1, 2:2, 3:3}" "new = d.copy()" # call dict function copy()
@@ -446,7 +445,7 @@ u = t, (1, 2, 3, 4, 5) # nested tuple, ((12345, 54321, 'hello!'), (1, 2, 3, 4, 5
 *: the previous character can be matched zero or more times. e.g. a[bcd]*b, matches the letter 'a', zero or more letters from the class [bcd], ends with a 'b'.
 +: the previous character can be matched one or more times.
 ?:the previous character can be matched either once or zero times, e.g. home-?brew matches either homebrew or home-brew
-'.': often used where you want to match “any character”
+'.': often used where you want to match “any character”, but only match 1 character
 matched string   python string literals for this match    python raw string for this match
 "\section"       "\\\\section"                            r"\\section"
 "ab*"            "ab*"                                    r"ab*"
@@ -481,15 +480,15 @@ p = re.compile('\d+')
 p.findall('12 drummers drumming, 11 pipers piping, 10 lords a-leaping') # ['12', '11', '10']
 itr = p.finditer('12 drummers drumming, 11 pipers piping, 10 lords a-leaping')
 for match in itr:
-    print m.span()
+    print (match.span())
 m = re.match(r'From\s+', 'Fromage amk') # m is None
 
-p = re.compile(r'\W+')
+p1 = re.compile(r'\W+')
 p2 = re.compile(r'(\W+)')
-p.split('This... is a test.') # only return the list of text ['This', 'is', 'a', 'test', '']
+p1.split('This... is a test.') # only return the list of text ['This', 'is', 'a', 'test', '']
 p2.split('This... is a test.') # return list of text and delimiter ['This', '... ', 'is', ' ', 'a', ' ', 'test', '.', '']
-p.split('This is a test, short and sweet, of split().', 3) # split at most 3 times ['This', 'is', 'a', 'test, short and sweet, of split().']
-p.split('This is a test, short and sweet, of split().') # ['This', 'is', 'a', 'test', 'short', 'and', 'sweet', 'of', 'split', '']
+p1.split('This is a test, short and sweet, of split().', 3) # split at most 3 times ['This', 'is', 'a', 'test, short and sweet, of split().']
+p1.split('This is a test, short and sweet, of split().') # ['This', 'is', 'a', 'test', 'short', 'and', 'sweet', 'of', 'split', '']
 
 re.sub(pattern, repl, string, max=0)
 
@@ -514,8 +513,10 @@ re.sub(r'\d+', hexrepl, 'Call 65490 for printing, 49152 for user code.')
 ord(<char>): # convert a character to an integer (ASCII value)
 chr(<integer>) # convert an integer (ASCII value to character)
 
+f"{num1:02d}:{num2:02d}" # 02d ensures each number is a 2-digital number, padding with 0 if needed.
+f"{number:.2f}" # .2f ensures float number keeps 2 digits after decimal, such as 1.88, same as round(number, 2) and "{:.2f}".format(number)
 bin(<integer>)[2:] # convert integer to binary
-bin(6)[2:].zfill(8) # convert integer 6 to binary and make the binary string length 8
+bin(6)[2:].zfill(8) # convert integer 6 to binary and make the binary string length 8, zfill is right alignment
 '{0:08b}'.format(6) # same
 '''
 {} places a variable into a string
@@ -534,9 +535,6 @@ class Person(object):
         self.name = name
         self.age = age
 
-    def __eq__(self, other):
-        return self.name == other.name and self.age == other.age
-
     def __repr__(self):
         print(f"Person's name {self.name}, age is {self.age}")
 
@@ -546,6 +544,9 @@ class Person(object):
     def __cmp__(self, other):
         if hasattr(other, age):
             return self.age.__cmp__(other.age)
+
+    def __eq__(self, other):
+        return self.name == other.name and self.age == other.age
 
 jack1 = Person('Jack', 23)
 jack2 = Person('Jack', 23)
@@ -591,7 +592,7 @@ new_list = copy.deepcopy(old_list) # deepcopy will copy the obj inside the list 
 
 if __name__ == '__main__':
     for index, arg in enumerate(sys.argv):
-        print str(sys.argv[index]) + "is" + arg
+        print(str(sys.argv[index]) + "is" + arg)
 
 # You can create a function that accepts any number of positional arguments as well as some keyword-only
 # arguments by using the * operator to capture all the positional arguments and then specify optional
@@ -691,8 +692,8 @@ f = open("test.yaml", "r")
 docs = yaml.load_all(f)
 for doc in docs:
     for k,v in doc.items():
-        print k, "->", v
-    print "\n",
+        print(k, "->", v) # or print(f"{k} - > {v}")
+    print("\n"),
 
 with open('example.yaml', 'r') as stream:
     try:
@@ -704,6 +705,7 @@ with open('example.yaml', 'r') as stream:
 # del alist[index]: del removes element by index, no return value, which support index range, like start:end
 # alist.pop[index]: pop removes element by index and return the value. if no index specified, last element will be popped
 # alist.remove[element]: remove removes element by value, no return value, and raise ValueError if no value found in list
+# alist.index(element): return index of specified element if the element exists
 
 #
 [(x, y) for x in [1,2,3] for y in [3,1,4] if x != y]
@@ -722,9 +724,10 @@ matrix = [
     [9,10,11,12]
 ]
 # best solution: use zip, haha
-zip(*matrix)
+transposed = list(zip(*matrix))
 # option 1
-[[row[i] for row in matrix]for i in range(4)] # 4 is column
+col_len = len(matrix[0])
+[[row[i] for row in matrix]for i in range(col_len)] # col_len is 4
 # option 2
 transposed = []
 column_num = len(matrix[0])
@@ -741,5 +744,84 @@ def numberToBase(n, b):
     while n:
         digits.append(int(n % b))
         n //=b
-    
     return digits[::-1]
+
+# list operation, list is a good data structure as stack
+stack = []
+
+# deque operation: https://www.geeksforgeeks.org/deque-in-python/, deque is a good data structure as queue
+from collections import deque
+queue = deque()
+queue.append()
+queue.appendleft()
+most_left_item = queue.popleft()
+queue.rotate(1)  # Rotates to the right by one place
+
+# bisect operation: find a position in list where an element needs to be inserted to keep the list sorted.
+import bisect
+bisect.bisect()
+bisect.bisect_left(<your list>, <target number>)
+bisect.bisect_right(<your list>, <target number>)
+
+# dictionary operation
+del dictionary_variable_name[key_name] # delete an item
+sum(dictionary_variable_name.values()) # total of values
+len(dictionary_variable_name) # item numbers
+max(dictionary_variable_name, key=dictionary_variable_name.get) # get the key that has max value 
+min(dictionary_variable_name.values()) # get the max values
+min(dictionary_variable_name, key=dictionary_variable_name.get) # get the key that has min value
+min(dictionary_variable_name.values()) # get the min values
+
+from sortedcontainers import SortedDict # sorted by key. If you use your class obj as the key of the items in SortedDict, your class needs to define __lt__, __gt__, __eq__, __hash__
+from sortedcontainers import SortedList
+sd = SortedDict({'banana': 3, 'apple': 4, 'pear': 1, 'orange': 2})
+sd.bisect_left('apple') # 0
+sd.bisect_right('apple') # 1
+sd.pop('apple')
+sd.get('apple', '404')
+sd.peekitem() # default, it returns the last (maximum) item as a (key, value) tuple. You can specify an index to peek at an item in a specific position based on its key order.
+
+# math operation
+import math
+math.ceil()
+math.floor()
+round(value, decimals after dot .)
+
+# timestamp format
+# Sun 10 May 2015 13:54:36 -0700: "%a %d %b %Y %H:%M:%S %z"
+# regex
+import re
+re.findall(r'(\w+)@(\w+)\.(\w+)','username@hackerrank.com') # [('username', 'hackerrank', 'com')]
+m = re.match(r'(\w+)@(\w+)\.(\w+)','username@hackerrank.com')
+m.group(0)       # The entire match 'username@hackerrank.com'
+m.group(1)       # The first parenthesized subgroup. 'username'
+m.group(2)       # The second parenthesized subgroup.'hackerrank'
+m.group(3)       # The third parenthesized subgroup. 'com'
+m.group(1,2,3)   # Multiple arguments give us a tuple. ('username', 'hackerrank', 'com')
+m.groups()       # ('username', 'hackerrank', 'com')
+
+m = re.match(r'(?P<user>\w+)@(?P<website>\w+)\.(?P<extension>\w+)','myname@hackerrank.com')
+m.groupdict()  # {'website': 'hackerrank', 'user': 'myname', 'extension': 'com'}
+
+m = re.search(r'\d+','1234')
+m.end() # 4
+m.start # 0
+
+# itertools
+# Permutations: Generate all possible arrangements of a given set of elements where order matters.
+# Combinations: Generate all possible combinations of a given set of elements where order does not matter.
+# Product: Generate the Cartesian product of multiple iterables, which is the set of all possible combinations of elements from each iterable.
+from itertools import permutations, product, combinations, combinations_with_replacement # product return 2-D array, others return array, each item in the arrar is a tuple
+print(list(combinations("BCAAB",2)))
+# [('B', 'C'), ('B', 'A'), ('B', 'A'), ('B', 'B'), ('C', 'A'), ('C', 'A'), ('C', 'B'), ('A', 'A'), ('A', 'B'), ('A', 'B')]
+print(list(permutations("BCAAB",2)))
+# [('B', 'C'), ('B', 'A'), ('B', 'A'), ('B', 'B'), ('C', 'B'), ('C', 'A'), ('C', 'A'), ('C', 'B'), ('A', 'B'), ('A', 'C'), ('A', 'A'), ('A', 'B'), ('A', 'B'), ('A', 'C'), ('A', 'A'), ('A', 'B'), ('B', 'B'), ('B', 'C'), ('B', 'A'), ('B', 'A')]
+product(*lists) # lists = [[],[],[]]. product create a new [[],[],[]] by picking one item from each array
+print permutations(['1','2','3']) # <itertools.permutations object at 0x02A45210> if input is sorted, then output is sorted as well by lexicographic
+print list(permutations(['1','2','3'])) # [('1', '2', '3'), ('1', '3', '2'), ('2', '1', '3'), ('2', '3', '1'), ('3', '1', '2'), ('3', '2', '1')]
+print list(permutations(['1','2','3'],2)) # [('1', '2'), ('1', '3'), ('2', '1'), ('2', '3'), ('3', '1'), ('3', '2')]
+print list(permutations('abc',3)) # [('a', 'b', 'c'), ('a', 'c', 'b'), ('b', 'a', 'c'), ('b', 'c', 'a'), ('c', 'a', 'b'), ('c', 'b', 'a')]
+print list(combinations('12345',2)) # [('1', '2'), ('1', '3'), ('1', '4'), ('1', '5'), ('2', '3'), ('2', '4'), ('2', '5'), ('3', '4'), ('3', '5'), ('4', '5')]
+print list(combinations([1,1,3,3,3],4)) # [(1, 1, 3, 3), (1, 1, 3, 3), (1, 1, 3, 3), (1, 3, 3, 3), (1, 3, 3, 3)]
+print list(combinations_with_replacement('12345',2)) # [('1', '1'), ('1', '2'), ('1', '3'), ('1', '4'), ('1', '5'), ('2', '2'), ('2', '3'), ('2', '4'), ('2', '5'), ('3', '3'), ('3', '4'), ('3', '5'), ('4', '4'), ('4', '5'), ('5', '5')]
+print list(combinations([1,1,3,3,3],2)) # [(1, 1), (1, 3), (1, 3), (1, 3), (1, 3), (1, 3), (1, 3), (3, 3), (3, 3), (3, 3)]
