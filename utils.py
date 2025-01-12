@@ -86,30 +86,48 @@ def isValid(s):
 # Given a string containing just the characters '(' and ')',
 # find the length of the longest valid (well-formed) parentheses substring.
 # eg. input: ")()())", output 4  because the string is "()()"
-def longestValidParentheses(s):
-  my_stack = list() # storing index of char in s
-  my_stack.append(-1) # empty stack and push -1 to it. The first element of stack is used to provide base for next valid string.
-  
-  #left = {} # save the ')' matching most left '(' success, both use index (key is right index, value is most left index)
-  length = 0
-  for i, c in enumerate(s):
-    if c == "(":
-      my_stack.append(i) # push index
-    elif c == ")":
-      my_stack.pop() # Pop the previous opening bracket's index (last element in the list)
-      if len(my_stack) != 0:
-        length = max(length, i - my_stack[len(my_stack)-1])
-      else:
-        my_stack.append(i)
-    else:
-      continue
-    #r = i
-    #if left.has_key(l-1):
-    #    left[r] = left[l-1]
-    #else:
-    #    left[r] = l
-    #length = r - left[r] + 1
-  return length
+from typing import Tuple
+def longest_valid_parentheses(s: str) -> Tuple[int, str]:
+    stack = []
+    max_length = 0
+    base_index = -1 # Initialize a base index before the string
+    start_index = 0  # To track the start of the longest valid substring
+
+    for i, char in enumerate(s):
+        if char == '(':
+            # Push the index of '(' onto the stack
+            stack.append(i)
+        else:
+            # Pop the stack for ')'
+            if stack:
+                stack.pop()
+                # Calculate the length of the valid substring
+                if stack:
+                    current_length = i - stack[-1]
+                else:
+                    current_length = i - base_index
+                # Update max length and start index if needed
+                if current_length > max_length:
+                    max_length = current_length
+                    start_index = i - max_length + 1
+            else:
+                # Reset the base index if no matching '('
+                base_index = i
+        # if input string not only has "(" and ")", we need add these codes to ignore all other characters
+        # else:
+        #     # Reset the base index for invalid characters
+        #     base_index = i
+        #     stack.clear()
+
+    # Extract the longest valid substring using start_index and max_length
+    longest_substring = s[start_index:start_index + max_length]
+    return max_length, longest_substring
+
+# Example usage
+input_string = "(()))())("
+length, substring = longest_valid_parentheses(input_string)
+print("Length of longest valid parentheses substring:", length)
+print("Longest valid parentheses substring:", substring)
 
 # function to return the first non-alphabetic order character in a string
 # test your functions with different input
