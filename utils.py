@@ -150,12 +150,12 @@ def firstNonAlphabeticOrderChar(s):
   input = ''.join([c for c in input if c.isalnum()])
   print(f"input string is {0}".format(input))
   sorted_s = "abcdefghijklmnopqrstuvwxyz" # or import string, sorted_s = string.ascii_lowercase
-  pre = ""
+  pre_c = ""
   for i in range(len(input)):
-    if pre == input[i]: # this is a repeated character
+    if pre_c == input[i]: # this is a repeated character
       continue
     if input[i] in sorted_s:
-      pre = input[i]
+      pre_c = input[i]
       index = sorted_s.index(input[i])
       sorted_s = sorted_s[index+1:]
     else:
