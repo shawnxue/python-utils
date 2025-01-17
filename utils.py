@@ -28,13 +28,13 @@ def numberToBase(n, b):
     while n:
         digits.append(int(n % b))
         n //= b
-    
+
     return digits[::-1]
 
 # Given a string, find the length of the longest substring without repeating characters.
 '''
 Input: "abcabcbb"
-Output: 3 
+Output: 3
 Explanation: The answer is "abc", with the length of 3.
 
 Input: "bbbbb"
@@ -43,7 +43,7 @@ Explanation: The answer is "b", with the length of 1.
 
 Input: "pwwkew"
 Output: 3
-Explanation: The answer is "wke", with the length of 3. Note that the answer must be a substring, 
+Explanation: The answer is "wke", with the length of 3. Note that the answer must be a substring,
 "pwke" is a subsequence and not a substring
 '''
 
@@ -315,11 +315,10 @@ def twoSum(nums, target):
     for index, num in enumerate(nums):
         if num in diff_dict.values():
             # find key by value from the dictionary
-            num1_s = list(diff_dict.keys())[list(diff_dict.values()).index(num)]
-            num1 = int(num1_s)
+            num1 = list(diff_dict.keys())[list(diff_dict.values()).index(num)]
             result.append((nums.index(num1), index))
         else:
-            diff_dict[str(num)] = target - num
+            diff_dict[num] = target - num
     if len(result) > 0:
         return result
     else:
@@ -355,25 +354,21 @@ def threeSum(nums, target):
 # 1, 2, 2
 # 1, 1, 1, 2
 # 1, 1, 1, 1, 1
-import copy
-def print_all_sum(target):
-  output = []
-  result = []
-  print_all_sum_rec(target, 0, 1, output, result)
-  return output
+def find_combinations(target, current_combination=None, start=1):
+    if current_combination is None:
+        current_combination = []
 
-def print_all_sum_rec(target, current_sum, start, output, result):
-  if current_sum == target:
-    output.append(copy.copy(result))
+    # Base case: if target is 0, we found a valid combination
+    if target == 0:
+        print(current_combination)
+        return
 
-  for i in range(start, target):
-    temp_sum = current_sum + i
-    if temp_sum <= target:
-      result.append(i)
-      print_all_sum_rec(target, temp_sum, i, output, result)
-      result.pop()
-    else:
-      return
+    # Explore all numbers from 'start' to 'target'
+    for num in range(start, target + 1):
+        # Include the current number in the combination
+        find_combinations(target - num, current_combination + [num], num)
+
+find_combinations(5)
 
 # Given a non negative integer number num. For every number between 0 and num,
 # calculate the number of 1's in their binary representation and return them as an array.
@@ -531,7 +526,7 @@ def decodeString2(s):
 
 # Given an array of numbers nums, in which exactly two elements appear only once and all the other elements
 # appear exactly twice. Find the two elements that appear only once
-def singleNumber(nums: list[int]): 
+def singleNumber(nums: list[int]):
     my_set = set(nums)
     result = []
     for num in my_set:
@@ -780,7 +775,7 @@ class Node:
   def __init__(self, data=None, next=None):
     self.data = data
     self.next  = next
-    
+
 def addLinkedListInteger(l1, l2):
   head = None
   cur = None
@@ -972,7 +967,7 @@ def create_tree_1(inorder, postorder):
         in_array_right_tree = in_array[in_index + 1:]
         post_array_left_tree = post_array[0:len(in_array_left_tree)]
         post_array_right_tree = post_array[-len(in_array_right_tree) - 1:-1]
-        
+
         # use this index in inorder array to construct left and right subtree
         current_root.right = build_tree_1(in_array_right_tree, post_array_right_tree)
         current_root.left = build_tree_1(in_array_left_tree, post_array_left_tree)
@@ -1175,22 +1170,22 @@ def getCount(root, low, high):
         return getCount(root.right, low, high)
     else: # root.value > high
         return getCount(root.left, low, high)
-    
-def bst_insert(root, key): 
-    if root is None: 
-        return Node(key) 
-    else: 
-        if root.val < key: 
-            root.right = bst_insert(root.right, key) 
-        else: 
-            root.left = bst_insert(root.left, key) 
+
+def bst_insert(root, key):
+    if root is None:
+        return Node(key)
+    else:
+        if root.val < key:
+            root.right = bst_insert(root.right, key)
+        else:
+            root.left = bst_insert(root.left, key)
     return root
 
-def bst_search(root, key): 
-    if root is None or root.val == key: 
-        return root 
-    if root.val < key: 
-        return bst_search(root.right, key) 
+def bst_search(root, key):
+    if root is None or root.val == key:
+        return root
+    if root.val < key:
+        return bst_search(root.right, key)
     return bst_search(root.left, key)
 
 # Given a root node reference of a BST and a key (target value), delete the node with the given key in the BST.
@@ -1245,11 +1240,11 @@ def is_bst_balanced(root) -> bool:
     def check_balance(node) -> (int, bool):
         if node is None:
             return 0, True
-            
+
         left_height, left_balanced = check_balance(node.left)
         if not left_balanced:
             return -1, False
-        
+
         right_height, right_balanced = check_balance(node.right)
         if not right_balanced:
             return -1, False
@@ -1270,8 +1265,8 @@ def kth_smallest_in_bst(root, k):
 
     # The number of nodes in the left subtree of the root
     left_nodes = countNodes(root.left) if root else 0
-    
-    # If k is equal to the number of nodes in the left subtree plus 1, 
+
+    # If k is equal to the number of nodes in the left subtree plus 1,
     # That means we must return the root's value as we've reached the k-th smallest
     if k == left_nodes + 1:
         return root.val
@@ -1283,7 +1278,7 @@ def kth_smallest_in_bst(root, k):
     # The k-th smallest must be in the right subtree.
     else:
         return kth_smallest_in_bst(root.right, k - 1 - left_nodes)
-    
+
 def kth_largest_in_bst(root, k):
     """
     Find the k-th largest element in a BST.
@@ -1292,16 +1287,16 @@ def kth_largest_in_bst(root, k):
         nonlocal count, result
         if not node or count >= k:
             return
-        
+
         # Traverse the right subtree first (larger elements)
         reverse_inorder(node.right)
-        
+
         # Increment the count and check if we've reached the k-th largest
         count += 1
         if count == k:
             result = node.value
             return
-        
+
         # Traverse the left subtree
         reverse_inorder(node.left)
 
@@ -1309,7 +1304,7 @@ def kth_largest_in_bst(root, k):
     result = None
     reverse_inorder(root)
     return result
-    
+
 def get_height(node):
     """Recursively calculates the height of a subtree."""
     if not node:
@@ -1422,7 +1417,7 @@ def leastRecentlyUsedDesignNew():
                     if i.data == value:
                         return i
                     i = i.next
-    
+
         def set(self, value):
             node = self.get(value)
             if node == None:
@@ -1443,7 +1438,7 @@ def leastRecentlyUsedDesignNew():
             while node != None:
                 print(str(node.data) + ", ")
                 node = node.next
-      
+
     cache1 = LRUCache(4)
     cache1.set(10)
     cache1.printcache()
@@ -1852,7 +1847,7 @@ def print_to_text(base_url):
         for paragraph in soup.findall(dir='ltr'):
             f.write(paragraph.text.replace("<span>", ""))
 # calculate the angle between hour and minute
-def calculateAngle(h,m):       
+def calculateAngle(h,m):
   # validate the input
   if (h < 0 or m < 0 or h > 24 or m > 60):
     print('Wrong input')
@@ -1933,15 +1928,15 @@ def clone(root):
 # python multi thread concurrency, producer and consumer, use queue as lock
 """"
 Since the Queue has a Condition and that condition has its Lock we don't need to bother about Condition and Lock.
-Producer uses Queue.put(item[, block[, timeout]]) to insert data in the queue. It has the logic to acquire the lock 
-before inserting data in queue. If optional args block is true and timeout is None (the default), block if necessary 
-until a free slot is available. If timeout is a positive number, it blocks at most timeout seconds and raises the Full 
-exception if no free slot was available within that time. Otherwise (block is false), put an item on the queue if a 
+Producer uses Queue.put(item[, block[, timeout]]) to insert data in the queue. It has the logic to acquire the lock
+before inserting data in queue. If optional args block is true and timeout is None (the default), block if necessary
+until a free slot is available. If timeout is a positive number, it blocks at most timeout seconds and raises the Full
+exception if no free slot was available within that time. Otherwise (block is false), put an item on the queue if a
 free slot is immediately available, else raise the Full exception (timeout is ignored in that case).
 
 Also put() checks whether the queue is full, then it calls wait() internally and so producer starts waiting
 
-Consumer uses Queue.get([block[, timeout]]), and it acquires the lock before removing data from queue. If the queue is empty, 
+Consumer uses Queue.get([block[, timeout]]), and it acquires the lock before removing data from queue. If the queue is empty,
 it puts consumer in waiting state. Queue.get() has notify() method
 """
 
@@ -2023,7 +2018,7 @@ if __name__ == '__main__':
 
 """
 Another example:
-In this example, worker() tries to acquire the lock three separate times, and counts how many attempts it has to make to do so. 
+In this example, worker() tries to acquire the lock three separate times, and counts how many attempts it has to make to do so.
 In the mean time, locker() cycles between holding and releasing the lock, with short sleep in each state used to simulate load.
 """
 def locker(lock: threading.Lock()):
@@ -2093,11 +2088,11 @@ if __name__ == '__main__':
     worker_thread.start()
 
 """"
-In this chapter, we'll learn another way of synchronizing threads: using a Condition object. Because a condition variable is always 
-associated with some kind of lock, it can be tied to a shared resource. A lock can be passed in or one will be created by default. 
-Passing one in is useful when several condition variables must share the same lock. The lock is part of the condition object: we don't have to track it separately. 
+In this chapter, we'll learn another way of synchronizing threads: using a Condition object. Because a condition variable is always
+associated with some kind of lock, it can be tied to a shared resource. A lock can be passed in or one will be created by default.
+Passing one in is useful when several condition variables must share the same lock. The lock is part of the condition object: we don't have to track it separately.
 So, the condition object allows threads to wait for the resource to be updated.
-In the following example, the consumer threads wait for the Condition to be set before continuing. The producer thread is responsible for setting the condition 
+In the following example, the consumer threads wait for the Condition to be set before continuing. The producer thread is responsible for setting the condition
 nd notifying the other threads that they can continue.
 """
 def consumer(cv: threading.Condition()):
@@ -2131,7 +2126,7 @@ if __name__ == '__main__':
         print(part)
         print("%s\n" % str(disk_usage(part.mountpoint)))
 
-# python multi process: 
+# python multi process:
 # https://www.toptal.com/python/beginners-guide-to-concurrency-and-parallelism-in-python#:~:text=What's%20the%20difference%20between%20Python,child%20processes%20bypassing%20the%20GIL.
 # https://timber.io/blog/multiprocessing-vs-multithreading-in-python-what-you-need-to-know/
 import json
@@ -2230,14 +2225,14 @@ def main():
 
     # By placing the executor inside a with block, the executors shutdown method
     # will be called cleaning up threads.
-    # 
+    #
     # By default, the executor sets number of workers to 5 times the number of
     # CPUs.
     with ThreadPoolExecutor() as executor:
 
         # Create a new partially applied function that stores the directory
         # argument.
-        # 
+        #
         # This allows the download_link function that normally takes two
         # arguments to work with the map function that expects a function of a
         # single argument.
@@ -2255,7 +2250,7 @@ if __name__ == '__main__':
 #  This adjacency list could also be represented in code using a dict
 # The keys of this dictionary are the source vertices, and the value for each key is a list. This list is usually implemented as a linked list.
 graph = {
-    1: [2, 3, None], 
+    1: [2, 3, None],
     2: [4, None],
     3: [None],
     4: [5, 6, None],
@@ -2277,8 +2272,8 @@ llist.pop()
 llist.popleft()
 
 #solution for solve sudoku
-## Given a partially filled 9×9 2D array ‘grid[9][9]’, the goal is to assign digits (from 1 to 9) to the empty cells so that every row, column, 
-## and subgrid of size 3×3 contains exactly one instance of the digits from 1 to 9. 
+## Given a partially filled 9×9 2D array ‘grid[9][9]’, the goal is to assign digits (from 1 to 9) to the empty cells so that every row, column,
+## and subgrid of size 3×3 contains exactly one instance of the digits from 1 to 9.
 ## input:
 # grid = { { 3, 1, 6, 5, 7, 8, 4, 9, 2 },
 #          { 5, 2, 9, 1, 3, 4, 7, 6, 8 },
@@ -2290,14 +2285,14 @@ llist.popleft()
 #          { 6, 9, 2, 3, 5, 1, 8, 7, 4 },
 #          { 7, 4, 5, 0, 8, 6, 3, 1, 0 } };
 ## output:
-# 3 1 6 5 7 8 4 9 2 
-# 5 2 9 1 3 4 7 6 8 
-# 4 8 7 6 2 9 5 3 1 
-# 2 6 3 4 1 5 9 8 7 
-# 9 7 4 8 6 3 1 2 5 
-# 8 5 1 7 9 2 6 4 3 
-# 1 3 8 9 4 7 2 5 6 
-# 6 9 2 3 5 1 8 7 4 
+# 3 1 6 5 7 8 4 9 2
+# 5 2 9 1 3 4 7 6 8
+# 4 8 7 6 2 9 5 3 1
+# 2 6 3 4 1 5 9 8 7
+# 9 7 4 8 6 3 1 2 5
+# 8 5 1 7 9 2 6 4 3
+# 1 3 8 9 4 7 2 5 6
+# 6 9 2 3 5 1 8 7 4
 # 7 4 5 2 8 6 3 1 9
 def print_grid(arr):
     for row in range(9):
@@ -2448,7 +2443,7 @@ def rename_pictures(input_s: str) -> str:
         zeros = len(str(count))
         num = 1
         for picture in pictures[city]:
-            # picture is a tuple, -1 is old index, 
+            # picture is a tuple, -1 is old index,
             # item is a new tuple, first data is old index, second data is new name
             item = (picture[-1], city + str(num).zfill(zeros) + "." + picture[0])
             result.append(item)
@@ -2459,8 +2454,8 @@ def rename_pictures(input_s: str) -> str:
     return "\n".join(picture[1] for picture in result)
 
 ## Given a list of dates in string format, write a Python program to sort the list of dates in ascending order.
-## Input : dates = [“24 Jul 2017”, “25 Jul 2017”, “11 Jun 1996”, “01 Jan 2019”, “12 Aug 2005”, “01 Jan 1997”] 
-## Output : 
+## Input : dates = [“24 Jul 2017”, “25 Jul 2017”, “11 Jun 1996”, “01 Jan 2019”, “12 Aug 2005”, “01 Jan 1997”]
+## Output :
 ## 01 Jan 2007
 ## 10 Jul 2016
 ## 2 Dec 2017
@@ -2468,22 +2463,22 @@ def rename_pictures(input_s: str) -> str:
 ## 23 Jun 2018
 ## 01 Jan 2019
 ## By default, built-in sorting functions (sorted and list.sort will sort the list of strings in alphabetical order
-## In Python, we have the datetime module which makes date based comparison easier. The datetime.strptime() function 
+## In Python, we have the datetime module which makes date based comparison easier. The datetime.strptime() function
 ## is used to convert a given string into datetime object. It accepts two arguments: date (string) and format (used to specify the format, returns a datetime object.
 ## datetime.strptime(date, format)
-## %d ---> for Day, %b ---> for Month, %Y ---> for Year       
-def sort_date_strings_by_datetime():  
+## %d ---> for Day, %b ---> for Month, %Y ---> for Year
+def sort_date_strings_by_datetime():
     from datetime import datetime
-    dates =  ["23 Jun 2018", "2 Dec 2017", "11 Jun 2018", 
-              "01 Jan 2019", "10 Jul 2016", "01 Jan 2007"]  
-    # Sort the list in ascending order of dates 
+    dates =  ["23 Jun 2018", "2 Dec 2017", "11 Jun 2018",
+              "01 Jan 2019", "10 Jul 2016", "01 Jan 2007"]
+    # Sort the list in ascending order of dates
     dates.sort(key = lambda date: datetime.strptime(date, '%d %b %Y')) # or dates = sorted(dates, key = lambda date: datetime.strptime(date, '%d %b %Y'))
     # Print the dates in a sorted order
-    for i in range(len(dates)):  
+    for i in range(len(dates)):
         print(dates[i])
 
 ## Given an array of integers arr, your task is to count the number of contiguous subarrays that represent a sawtooth sequence of at least two elements.
-## A sawtooth sequence is a sequence of number that alternate between increasing and decreasing. In other words, each element is either strictly greater 
+## A sawtooth sequence is a sequence of number that alternate between increasing and decreasing. In other words, each element is either strictly greater
 ## than it’s neighboring element or strictly less than it’s neighboring elements.
 
 def sawtooth(orig_arr):
@@ -2509,7 +2504,7 @@ def sawtooth(orig_arr):
         else:
             return False
         return True
-    
+
     result = 0
     for i in range(len(orig_arr)):
         for j in range(i+2, len(orig_arr)+1):
@@ -2521,7 +2516,7 @@ def sawtooth(orig_arr):
     return result
 
 '''
-You are given an array of non-negative integers numbers. You are allowed to choose any number from this array and swap any two digits in it. 
+You are given an array of non-negative integers numbers. You are allowed to choose any number from this array and swap any two digits in it.
 If after the swap operation the number contains leading zeros, they can be omitted and not considered (eg: 010 will be considered just 10).
 Your task is to check whether it is possible to apply the swap operation at most once, so that the elements of the resulting array are strictly increasing.
 '''
@@ -2595,7 +2590,7 @@ def alter_array_sort(numbers):
     else:
         return False
 
-# check if two integers are anagrams 
+# check if two integers are anagrams
 # a number is said to be an anagram of some other number if it can be made equal to the other number by just shuffling the digits in it.
 def is_number_anagrams(a, b):
     def update_freq(n, freq):
@@ -2650,8 +2645,8 @@ Tetris-inspired question
 You are given a matrix of integers field of size height × width representing a game field, and also a matrix of integers figure of size 3 × 3 representing a figure. Both matrices contain only 0s and 1s, where 1 means that the cell is occupied, and 0 means that the cell is free.
 You choose a position at the top of the game field where you put the figure and then drop it down. The figure falls down until it either reaches the ground (bottom of the field) or lands on an occupied cell, which blocks it from falling further. After the figure has stopped falling, some of the rows in the field may become fully occupied.
 Your task is to find the dropping position such that at least one full row is formed. As a dropping position, you should return the column index of the cell in the game field which matches the top left corner of the figure’s 3 × 3 matrix. If there are multiple dropping positions satisfying the condition, feel free to return any of them. If there are no such dropping positions, return -1.
-Note: The figure must be dropped so that its entire 3 × 3 matrix fits inside the field, even if part of the matrix is empty. 
-This solution starts by defining some dimensions that will be important for the problem. Then, for every valid dropping position—that is, columns in range(width - figure_size + 1)—the code goes row by row, seeing how far the figure will go until it will “stop.” 
+Note: The figure must be dropped so that its entire 3 × 3 matrix fits inside the field, even if part of the matrix is empty.
+This solution starts by defining some dimensions that will be important for the problem. Then, for every valid dropping position—that is, columns in range(width - figure_size + 1)—the code goes row by row, seeing how far the figure will go until it will “stop.”
 To do this, it peeks at the next row and asks: can the figure fit there? If not, it stops at the previous row. The figure doesn’t fit if there is a 1 in the same place in both the figure and the field (offset by the row). The loop can stop when row == height - figure_size + 1, because then the bottom of the figure will have hit the bottom of the field.
 Once the code figures out the last row the figure can drop to before it can’t fit anymore, it’s time to see if there’s a fully-filled row created anywhere. From where the figure “stopped,” the code iterates through the field and figure arrays row by row, checking to see if together, they’ve created a filled row. Cleverly, the code sets row_filled = True and then marks it False if one or both of these conditions are met:
 Any of the field cells in the row are empty (not 1)
@@ -2662,7 +2657,7 @@ def tetris(field, figure):
    height = len(field)
    width = len(field[0])
    figure_size = len(figure)
- 
+
    for column in range(width - figure_size + 1):
        row = 1
        while row < height - figure_size + 1:
@@ -2676,7 +2671,7 @@ def tetris(field, figure):
            row += 1
 
        row -= 1
- 
+
        for dx in range(figure_size):
            row_filled = True
            for column_index in range(width):
@@ -2713,7 +2708,7 @@ def find_digit_frequency_from_nums(a):
     for num in a:
         for c in str(num):
             freq[int(c)] += 1
-    max_freq = max(freq) 
+    max_freq = max(freq)
     result = list()
     for i, n in enumerate(freq):
         if n == max_freq:
@@ -2722,8 +2717,8 @@ def find_digit_frequency_from_nums(a):
 
 
 '''
-You are given an array of strings arr. Your task is to construct a string from the words in arr, starting with the 0th character 
-from each word (in the order they appear in arr), followed by the 1st character, then the 2nd character, etc. If one of the words doesn't 
+You are given an array of strings arr. Your task is to construct a string from the words in arr, starting with the 0th character
+from each word (in the order they appear in arr), followed by the 1st character, then the 2nd character, etc. If one of the words doesn't
 have an ith character, skip that word.
 
 Return the resulting string.
@@ -2769,7 +2764,7 @@ def contruct_string_from_each_word_in_array(arr):
 
 '''Given an array of integers a, your task is to find how many of its contiguous subarrays of length m contain a pair of integers with a sum equal to k.
 
-More formally, given the array a, your task is to count the number of indices 0 ≤ i ≤ a.length - m such that a subarray [a[i], a[i + 1], ..., a[i + m - 1]] 
+More formally, given the array a, your task is to count the number of indices 0 ≤ i ≤ a.length - m such that a subarray [a[i], a[i + 1], ..., a[i + m - 1]]
 contains at least one pair (a[s], a[t]), where:
 
     s ≠ t
@@ -2840,13 +2835,13 @@ def substring_sum(a, m, k):
             else:
                 pairs[n] = target - n
         return False
-        
+
     for i in range(0, len(a) - m + 1):
         sub_a = a[i: i + m]
         sub_count = count_two_sum(sub_a, k)
         if sub_count > 0:
-            result += 1 
-    
+            result += 1
+
     return result
 
 '''You are given an array of integers a. A new array b is generated by rearranging the elements of a in the following way:
@@ -2903,8 +2898,8 @@ def mutation(a):
 '''You are given an array of arrays a. Your task is to group the arrays a[i] by their mean values, so that arrays with equal
 mean values are in the same group, and arrays with different mean values are in different groups.
 
-Each group should contain a set of indices (i, j, etc), such that the corresponding arrays (a[i], a[j], etc) all have the same mean. 
-Return the set of groups as an array of arrays, where the indices within each group are sorted in ascending order, and the groups are 
+Each group should contain a set of indices (i, j, etc), such that the corresponding arrays (a[i], a[j], etc) all have the same mean.
+Return the set of groups as an array of arrays, where the indices within each group are sorted in ascending order, and the groups are
 sorted in ascending order of their minimum element.
 
 For
@@ -2941,7 +2936,7 @@ def mean_values(a):
         result[str(means[i])] = cur
     return list(result.values())
 
-'''Given an array of unique integers numbers, your task is to find the number of pairs of indices (i, j) such that i ≤ j and 
+'''Given an array of unique integers numbers, your task is to find the number of pairs of indices (i, j) such that i ≤ j and
 the sum numbers[i] + numbers[j] is equal to some power of 2.
 Note: The numbers 1, 2, 4, 8, etc. are considered to be powers of 2.
 Example
@@ -2975,7 +2970,7 @@ def solution(a):
            b[i] += a[i - 1]
        if i < n - 1:
            b[i] += a[i + 1]
-   return b 
+   return b
 
 '''
 The International Science Olympiads are held once a year, every summer. From each participating country, 4 to 6 high-school students are sent to compete. In order to choose these students, each country organizes an internal olympiad.
@@ -3032,7 +3027,7 @@ def solution_1(parent_dir='/root/devops') -> str:
     # sort and parse the dict, put it in output_s
     # sorting by key first (filename). If file is same, then sorting by score
     # output_l is a list of tuple (has 4 items), each item in this list is a tuple. First item of the tuple is subject, second item of this tuple a list which includes all students
-    # sample: [('math', [('amy', 'dic', 90), ('dsdf', 'sdfs', 98)]), ('physics', [('sd', 'sdfs', 78), ('ks', 'jjd', 98)])] 
+    # sample: [('math', [('amy', 'dic', 90), ('dsdf', 'sdfs', 98)]), ('physics', [('sd', 'sdfs', 78), ('ks', 'jjd', 98)])]
     output_l = sorted(output.items(), key=lambda item: (item[0], item[1][2]))
     # constract the output string
     for item in output_l:
@@ -3062,7 +3057,7 @@ def solution_2(parent_dir='/root/devops') -> str:
         sorted_l = sorted(output[sub], key = lambda item: item[2], reverse=True)
         if len(sorted_l) >=4:
             for i in range(4):
-                output_s += sorted_l[i][0] + " " + sorted_l[i][1] + "\n" 
+                output_s += sorted_l[i][0] + " " + sorted_l[i][1] + "\n"
         else:
             for item in sorted_l:
                 output_s += item[0] + " " + item[1] + "\n"
@@ -3151,7 +3146,7 @@ def minGroups(intervals: list[list[int]]) -> int:
     # The size of the heap at the end represents the number of groups needed
     return len(min_heap)
 
-# duplicate each digit in n, input: 1234, output: 11223344. Assume: 0 <= n <= 10**4 so to guarante no integer overflow 
+# duplicate each digit in n, input: 1234, output: 11223344. Assume: 0 <= n <= 10**4 so to guarante no integer overflow
 def duplicate_each_digit(n):
     result = 0
     power = 0
@@ -3163,7 +3158,7 @@ def duplicate_each_digit(n):
     return result
 
 # The string "PAYPALISHIRING" is written in a zigzag pattern on a given number of rows like this: (you may want to display this pattern in a fixed font for better legibility)
-# 
+#
 # P   A   H   N
 # A P L S I I G
 # Y   I   R
@@ -3187,7 +3182,7 @@ def convert(s: str, numRows: int) -> str:
             going_down = not going_down
 
         # Move up or down the rows
-        cur_row += 1 if going_down else -1 
+        cur_row += 1 if going_down else -1
 
     # Join all the rows to get the final zigzagged string
     return ''.join(rows)
@@ -3199,7 +3194,7 @@ result = convert(s, numRows)
 print(result)  # Output: PAHNAPLSIIGYIR
 
 # replace each character in a word with the corresponding character opposite in the English alphabet
-# A->Z, B->Y..... 
+# A->Z, B->Y.....
 def replace_char_in_word(input_str):
     # find a character that is the corresponding opposite character
     def opposite_char(c):
@@ -3217,7 +3212,7 @@ def replace_char_in_word(input_str):
     # retur the new words, taking the last word first and appending the remaining words in their original order, each separated by spaces.
     if len(new_words) == 1:
         return new_words[0]
-    else:    
+    else:
         return new_words[-1] + ' ' + ' '.join(new_words[0:-1])
     return result
 
@@ -3280,11 +3275,11 @@ def replace_nth_consonant(message: str, n: int) -> str:
     return ''.join(result)
 
 # there is a group chat with many users writing messages. the content of message includes text and mentions of other users in the chat.
-# Mentions in the group chat are formatted as strings starting with @ character and followed by at least one id separated by commas. 
-# An id is formatted as a string starging with id and followed by a positive integer from 1 to 999. Now you are given two arrays of strings titled members and messages. 
-# Your task is to calculate the mention statics for the group chat. in other words, count the number of messages that each chat member is mentioned i. 
-# Chat members mentioned in multiple times in a message should be counted only once per message. return the mention statics in an array of strings, 
-# where each string follows this format: [user id] = [mentions count]. the array should be sorted by mention count in descending order , or in case of a tie, 
+# Mentions in the group chat are formatted as strings starting with @ character and followed by at least one id separated by commas.
+# An id is formatted as a string starging with id and followed by a positive integer from 1 to 999. Now you are given two arrays of strings titled members and messages.
+# Your task is to calculate the mention statics for the group chat. in other words, count the number of messages that each chat member is mentioned i.
+# Chat members mentioned in multiple times in a message should be counted only once per message. return the mention statics in an array of strings,
+# where each string follows this format: [user id] = [mentions count]. the array should be sorted by mention count in descending order , or in case of a tie,
 # lexicographically by user id in ascending order
 def mention_statistics(members, messages):
     import re
@@ -3315,9 +3310,9 @@ def mention_statistics(members, messages):
     result.sort(key=lambda x: (-int(x.split(' = ')[1]), x.split(' = ')[0]))
     return result
 
-# Given an array of integer latencies where each element represents recorded latencies in millisecond, 
-# a positive integer threshold. Your task is to determine the max length of a continuous subarray such that 
-# the difference between the max and min latencies within this subarray dos not exceed thread. 
+# Given an array of integer latencies where each element represents recorded latencies in millisecond,
+# a positive integer threshold. Your task is to determine the max length of a continuous subarray such that
+# the difference between the max and min latencies within this subarray dos not exceed thread.
 # return the length of the longest such contiguous subarray
 # input: latencies = [7, 3, 5, 8, 6, 4, 9, 3], threshold = 4
 # output: [5, 8, 6, 4], and its length is 4.
@@ -3371,14 +3366,14 @@ def longest_subarray_threshold_2(latencies, threshold):
                 max_length = max(max_length, cur_len)
     return max_length, subs
 
-# You are provided with a string of alphanumeric characters in which each number, regardless of the number of digits, 
+# You are provided with a string of alphanumeric characters in which each number, regardless of the number of digits,
 # is always followed by at least one alphabetic character before the next number appears. The task requires you to return a
-# transformed version of the string wherein the first alphabetic character following each number is moved to a new position 
+# transformed version of the string wherein the first alphabetic character following each number is moved to a new position
 # within the string and characters in between are removed.
 # input:  "I have 2 apples and 5! oranges and 3 grapefruits."
 # output: "I have a2pples and o5ranges and g3rapefruits."
 # Specifically, for each number in the original string, identify the next letter that follows it, and then reposition that character to directly precede the number.
-#  All spaces and punctuation marks between the number and the letter are removed. 
+#  All spaces and punctuation marks between the number and the letter are removed.
 def replace_digits_in_string(input_string):
     import re
     pattern = re.compile(r'\d+')
@@ -3389,7 +3384,7 @@ def replace_digits_in_string(input_string):
         while input_string[new_index] == " " or input_string[new_index] == "!":
              new_index += 1
         input_string = input_string[0:num_index] + input_string[new_index] + num + input_string[new_index+1:]
-        
+
     return input_string
 # input: timePoints = ['10:00:00', '23:30:00'] and added_seconds = 3600, the output should be ['11:00:00', '00:30:00'].
 def add_seconds_to_times(timePoints, seconds):
@@ -3403,7 +3398,7 @@ def add_seconds_to_times(timePoints, seconds):
         result.append(new_time)
     return result
 
-# You are given an initial date as a string in the format YYYY-MM-DD, along with an integer n which represents a number of days. 
+# You are given an initial date as a string in the format YYYY-MM-DD, along with an integer n which represents a number of days.
 # Your task is to calculate the date after adding the given number of days to the initial date and return the result in the YYYY-MM-DD format
 def add_days_1(date, n):
     from datetime import datetime, timedelta
@@ -3442,14 +3437,14 @@ def add_days_2(date, n):
                 month += 1
     return f"{year:04d}-{month:02d}-{day:02d}"
 
-# given two lists, sentences and words, each comprising n strings, 
-# Your task is to find all instances of each word in the corresponding sentence from the sentences list and replace them with the reverse of the word. 
+# given two lists, sentences and words, each comprising n strings,
+# Your task is to find all instances of each word in the corresponding sentence from the sentences list and replace them with the reverse of the word.
 # When finding the matching string, you need to ignore case
 # The words and sentences at the same index in their respective lists are deemed to correspond to each other.
-# Return a new list comprising n strings, where each string is the sentence from the sentences list at the corresponding index, 
+# Return a new list comprising n strings, where each string is the sentence from the sentences list at the corresponding index,
 # with all instances of the word from the words list at the same index replaced with its reverse.
 # If the word is not found in the respective sentence, keep the sentence as it is.
-# Remember, while replacing the instances of word in the sentence, you should preserve the case of the initial letter of the word. 
+# Remember, while replacing the instances of word in the sentence, you should preserve the case of the initial letter of the word.
 # If a word starts with a capital letter in the sentence, its reversed form should also start with a capital letter.
 def replace_words_in_sentences(sentences, words):
     new_sentenaces = []
@@ -3463,8 +3458,8 @@ def replace_words_in_sentences(sentences, words):
             start_index = sentence.lower().find(word.lower(), start_index+1)
         new_sentenaces.append(sentence)
     return new_sentenaces
-# roadA and roadB are integer array, start jumping from road A.Each element in both the roads dictate exactly where to jump on the other road. 
-# If Alice is at the i-th position of roadA, where roadA[i] = x, then Alice moves to the x-th position of roadB. 
+# roadA and roadB are integer array, start jumping from road A.Each element in both the roads dictate exactly where to jump on the other road.
+# If Alice is at the i-th position of roadA, where roadA[i] = x, then Alice moves to the x-th position of roadB.
 # Likewise, if Alice is at the i-th position of roadB, where roadB[i] = y, then she moves to the y-th position of roadA
 # input: roadA = [1, 0, 2], roadB = [2, 0, 1], result = [2, 4, 4]
 def read_jump_distance(roadA, roadB):
@@ -3498,7 +3493,7 @@ def read_jump_distance(roadA, roadB):
     return result
 
 # find the character that is 3 characters before a given character in the English alphabet
-# e.g. the input character is 'a', the character 3 positions before it is 'x' 
+# e.g. the input character is 'a', the character 3 positions before it is 'x'
 # e.g. the input character is 'd', the character 3 positions before it is 'a'.
 def three_before_character(c):
     if 'a' <= c <= 'z': # or c.alpha() and c.islower()
@@ -3528,7 +3523,7 @@ def opposite_character(c):
         return c
 # given two lists, each list has many strings, for each string in list1, if it shuffle each character then can be same as string in list2, then return the string
 # input:
-# output: 
+# output:
 def find_string_anagram(list_1, list_2):
     from collections import defaultdict
     # Create mapping for `list_1`
@@ -3581,7 +3576,7 @@ def keyword_index(docs):
 import math
 import numpy as np
 
-# Define the binary search function 
+# Define the binary search function
 # Define a continuous function 'f' where f(x) = x^4 - x^2 - 10
 def f(x):
         return x**4 - x**2 - 10
@@ -3592,7 +3587,7 @@ def binary_search(func, target, left, right, precision):
             left = middle
         else:
             right = middle
-            
+
     return middle
 
 epsilon = 1e-6  # to make sure the solution is within an acceptable range
@@ -3602,7 +3597,7 @@ end = 5  # ending point of the interval
 result = binary_search(f, target, start, end, epsilon)
 print("The value of x for which f(x) is approximately 0 within the interval [" + str(start) + ", " + str(end) + "] is: ", result)
 
-# given a peculiar list of unique integers - it's sorted in a decreasing order and then rotated at a random pivot. 
+# given a peculiar list of unique integers - it's sorted in a decreasing order and then rotated at a random pivot.
 # So, while you and I know that it's still sorted, it kicks off from an unpredictable point
 # find a specific target number in this array and report its index. If the target turns up missing, return -1.
 # input: [4, 3, 2, 1, 8, 7, 6, 5], 1), output: 3
@@ -3698,7 +3693,7 @@ def largest_step(garden, start, direction):
     return k
 
 # intput: an array of n integer values, each value stands for a trap. A trap will reduce your health
-# move from the start position (index 0) to the end position.you can move by x elements in the right direction only, where x ranges from 1 to n. 
+# move from the start position (index 0) to the end position.you can move by x elements in the right direction only, where x ranges from 1 to n.
 # Each time you step on a trap, you lose health points equal to the trap's powe
 # output: the x that you must choose such that you lose the least amount of health points upon reaching the end of the array.
 # If at any point your health points reach 0 or less, you are considered out of the game.
@@ -3834,7 +3829,7 @@ def house_game(houses):
 # Zero signifies a blockade that prevents further movement.
 # The game proceeds along the following rules:
 # The player starts at the first position of the array (0-indexed) and moves according to the value at the player's current position in the array.
-# If the value in the current position is zero, then the game ends. If the player's current position leads them outside of the array's boundaries, 
+# If the value in the current position is zero, then the game ends. If the player's current position leads them outside of the array's boundaries,
 # then their ability to move in the current direction ceases.
 # If the latter happens, then the player reverses their direction and continues to move according to similar rules, but now the directions are inverted:
 # positive integers lead the player to the left, and negative integers point to the right.
@@ -3938,7 +3933,7 @@ def quick_sort_2(arr, low, high):
         pi = partition(arr, low, high)
         quick_sort_2(arr, low, pi - 1)
         quick_sort_2(arr, pi + 1, high)
-        
+
 # Generate a list of random numbers between 1 and 100
 random_list = random.sample(range(1, 101), 20)
 print('Unsorted list:', random_list)
@@ -4019,16 +4014,16 @@ import random, string
 # Generate a list of 100 random numbers between 1 and 1000
 random_numbers = [random.randint(1, 1000) for i in range(100)]
 print(f"Original List: {random_numbers}")
-# Outputs: Original List: [402, 122, 544, 724, 31, 515, 845, 2, 168, 311, 262, 498, 421, 25, 757, 171, 795, 634, 115, 572, 232, 94, 547, 177, 823, 
-# 607, 571, 403, 274, 527, 951, 971, 161, 771, 877, 969, 650, 37, 723, 497, 520, 571, 948, 886, 542, 795, 580, 933, 155, 692, 559, 259, 907, 516, 
+# Outputs: Original List: [402, 122, 544, 724, 31, 515, 845, 2, 168, 311, 262, 498, 421, 25, 757, 171, 795, 634, 115, 572, 232, 94, 547, 177, 823,
+# 607, 571, 403, 274, 527, 951, 971, 161, 771, 877, 969, 650, 37, 723, 497, 520, 571, 948, 886, 542, 795, 580, 933, 155, 692, 559, 259, 907, 516,
 # 294, 625, 152, 287, 75, 614, 719, 10, 828, 157, 574, 257, 853, 271, 873, 745, 233, 519, 272, 405, 541, 912, 294, 737, 940, 154, 49, 77, 464, 416,
 #  738, 143, 364, 223, 385, 201, 636, 493, 757, 10, 792, 555, 384, 362, 101, 109]
 # Sort the list
 sorted_numbers = merge_sort(random_numbers)
 print(f"\nSorted List: {sorted_numbers}")
 # Outputs: Sorted List: [2, 10, 10, 25, 31, 37, 49, 75, 77, 94, 101, 109, 115, 122, 143, 152, 154, 155, 157, 161, 168, 171, 177, 201, 223, 232, 233,
-#  257, 259, 262, 271, 272, 274, 287, 294, 294, 311, 362, 364, 384, 385, 402, 403, 405, 416, 421, 464, 493, 497, 498, 515, 516, 519, 520, 527, 541, 
-# 542, 544, 547, 555, 559, 571, 571, 572, 574, 580, 607, 614, 625, 634, 636, 650, 692, 719, 723, 724, 737, 738, 745, 757, 757, 771, 792, 795, 795, 823, 
+#  257, 259, 262, 271, 272, 274, 287, 294, 294, 311, 362, 364, 384, 385, 402, 403, 405, 416, 421, 464, 493, 497, 498, 515, 516, 519, 520, 527, 541,
+# 542, 544, 547, 555, 559, 571, 571, 572, 574, 580, 607, 614, 625, 634, 636, 650, 692, 719, 723, 724, 737, 738, 745, 757, 757, 771, 792, 795, 795, 823,
 # 828, 845, 853, 873, 877, 886, 907, 912, 933, 940, 948, 951, 969, 971]
 
 # Generate a list of 20 random alphanumeric characters.
@@ -4038,7 +4033,7 @@ print("Original List of random alphanumeric characters:\n", random_alphanumeric)
 sorted_alphanumeric = merge_sort(random_alphanumeric)
 print("\nSorted List of alphanumeric characters:\n", sorted_alphanumeric)
 
-# quick sort. divide and conquer, can be used to solve this problem more efficiently. By selecting the right pivot for partitioning, 
+# quick sort. divide and conquer, can be used to solve this problem more efficiently. By selecting the right pivot for partitioning,
 # the input list is divided into two: a left partition, which contains elements less than the pivot, and a right partition, which contains elements greater than the pivot.
 def find_kth_smallest(numbers, k):
     if numbers:
@@ -4087,7 +4082,7 @@ print(days_until_cooler([30, 60, 90, 120, 60, 30]))  # Expected: [-1, 4, 2, 1, 1
 print(days_until_cooler([100, 95, 90, 85, 80, 75]))  # Expected: [1, 1, 1, 1, 1, -1]
 print(days_until_cooler([1]))  # Expected: [-1]
 
-# analyzing historical stock prices. For each day, you would like to know the previous day when the price was lower than the current price. 
+# analyzing historical stock prices. For each day, you would like to know the previous day when the price was lower than the current price.
 def findSmallerPreceeding(numbers):
     result = [-1]
     stack = []
@@ -4105,7 +4100,7 @@ def findSmallerPreceeding(numbers):
 #  [4, 5, 6],
 #  [7, 8, 9]
 # ]
-# output: 
+# output:
 # [
 #  [9, 6, 3],
 #  [8, 5, 2],
@@ -4233,7 +4228,7 @@ def format_output(top_letters, top_words, n):
 #         col += 1
 
 # zigzag to traverse the 2D array
-# input: 
+# input:
 # matrix = [
 # [1, -2, 3, -4],
 # [5, -6, 7, 8],
@@ -4244,15 +4239,15 @@ def diagonal_traverse(matrix):
     n = len(matrix)       # Number of rows
     m = len(matrix[0])    # Number of columns
     result = []           # To store indices of negative values
-    
+
     row, col = 0, 0       # Start from the top-left corner
     direction = 1         # 1 for up-right, -1 for down-left
-    
+
     while row < n and col < m:
         # Check if the current cell contains a negative integer
         if matrix[row][col] < 0:
             result.append((row + 1, col + 1))  # Convert to 1-based index
-        
+
         # Move in the current direction
         if direction == 1:  # Moving up-right
             if col + 1 < m and row - 1 >= 0:  # Can move diagonally up-right
@@ -4274,7 +4269,7 @@ def diagonal_traverse(matrix):
             else:  # Hit the bottom boundary, move right
                 col += 1
                 direction = 1
-    
+
     return result
 # parse 2D array as clock wise
 def spiral_traverse_and_vowels(grid):
@@ -4317,7 +4312,7 @@ def is_prime(n):
         if n % i == 0:
             return False
     return True
-    
+
 # parse 2D array as move right, one down, move left, done down, move right
 def zigzag_traverse_and_primes(matrix):
     n = len(matrix)
@@ -4423,10 +4418,10 @@ def find_substring_indices(S, K):
         start += 1
     return indices
 
-# Both players are given the same string S. Both players have to make substrings using the letters of the string S, 
+# Both players are given the same string S. Both players have to make substrings using the letters of the string S,
 # Stuart has to make words starting with consonants, Kevin has to make words starting with vowels, The game ends when both
 #  players have made all possible substrings. A player gets +1 point for each occurrence of the substring in the string S.
-# solution 1 is better way, without generating all substrings. 
+# solution 1 is better way, without generating all substrings.
 # For a character at position i, the number of substrings starting with that character is n - i,
 def minion_game_1(string):
     vowels = 'AEIOU'
@@ -4473,14 +4468,14 @@ def maximize_function(K, M, lists):
     from itertools import product
     # pick one item from each array in the lists, Generate all possible combinations from the K lists
     combinations = product(*lists)
-    
+
     max_value = 0
     for combination in combinations:
         # Calculate the value of S for the current combination
         S = sum(x**2 for x in combination) % M
         # Update max_value if S is greater
         max_value = max(max_value, S)
-    
+
     return max_value
 
 # input: 1222311, output: (1, 1) (3, 2) (1, 3) (2, 1)
@@ -4622,11 +4617,11 @@ def generate_random_ip():
 def test_rate_limiter():
     # Create a rate limiter that allows 3 requests per 5 seconds
     rate_limiter = RateLimiter(max_requests=3, time_window=5)
-    
+
     # Generate a list of random IPs
     random_ips = [generate_random_ip() for _ in range(5)]  # 5 random IPs
     print(f"Testing with IPs: {random_ips}")
-    
+
     # Simulate requests for each IP
     for i in range(10):  # Simulate 10 rounds of requests
         print(f"--- Round {i + 1} ---")
@@ -4685,14 +4680,14 @@ for i in range(users):
         if i != j and M[i][j] == 0 and any((M[i][k] == 1 and M[k][j] == 1) for k in range(users)):
             print(f"User {i} and User {j} may know each other.")
 
-# Output: 
+# Output:
 # User 0 and User 2 may know each other.
 
 # depth first search in graph (ajancency list), resolve problems: establishment of connections within graphs and the discovery of pathways between two nodes
 def dfs_adjacency_graph(graph, start, visited):
     visited.add(start)
     print(start, end=' ')
-    
+
     for next_node in graph[start]:
         if next_node not in visited:
             dfs_adjacency_graph(graph, next_node, visited)
@@ -4710,9 +4705,9 @@ dfs_adjacency_graph(graph, 'A', visited)  # Output: A B D E C
 
 def dfs_graph(vertex, visited, graph, parent):
     visited.add(vertex)
-    for neighbor in graph[vertex]: 
-        if neighbor not in visited: 
-            if dfs_graph(neighbor, visited, graph, vertex): 
+    for neighbor in graph[vertex]:
+        if neighbor not in visited:
+            if dfs_graph(neighbor, visited, graph, vertex):
                 return True
         elif neighbor != parent:
             # The parent is already visited, but the parent -> vertex -> parent cycle is degenerate
@@ -4755,7 +4750,7 @@ def shortest_path_graph_to_destination(n, graph, start, end):
 
         if node == end:
             return distance, path
-        
+
         for neighbor in graph[node]:
             if neighbor not in visited:
                 visited.add(neighbor)
@@ -4784,15 +4779,15 @@ class Vehicle(ABC):
         self.color = color
         self.engine_type = engine_type
         self._engine_running = False
-    
+
     @abstractmethod
     def start_engine(self):
         pass
-    
+
     @abstractmethod
     def stop_engine(self):
         pass
-    
+
     @abstractmethod
     def drive(self):
         pass
@@ -4801,7 +4796,7 @@ class Car(Vehicle):
     def start_engine(self):
         self._engine_running = True
         print("Car engine started!")
-    
+
     def stop_engine(self):
         self._engine_running = False
         print("Car engine stopped!")
