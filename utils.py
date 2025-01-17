@@ -416,7 +416,7 @@ def longestPalindrome1(s):
     for idy, item in enumerate(s):
         for idx, item in enumerate(s):
             derp = s[idy:idx+1]
-            if isPalindrome(derp) and (len(derp) > len(herp)):
+            if isPalindrome(derp) and (len(derp) > len(result)):
                 result = derp
     return result
 
@@ -491,15 +491,15 @@ def lengthLongestPath(input):
     maxlen = 0
     pathlen = {} # key is the number of tabs(depth), value is the length of current path
     for s in input.splitlines(): # or input.split("\n")
-        curname = s.strip("\t") # or item.lstrip("\t")
-        depth = len(s) - len(curname) # number of tab
+        curname = s.strip("\t") # or s.lstrip("\t")
+        tab_count = len(s) - len(curname) # number of tab
         if '.' in curname:
             total_path_len = 0
-            for d in range(depth):
+            for d in range(tab_count):
                 total_path_len += pathlen[d]
             maxlen = max(maxlen, total_path_len + len(curname))
         else:
-            pathlen[depth] = len(curname) + 1 # +1 for "/"
+            pathlen[tab_count] = len(curname) + 1 # +1 for "/"
             #pathlen[depth + 1] = pathlen[depth] + len(pathname) + 1 # depth+1 is the total path length before file
     return maxlen
 
