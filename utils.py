@@ -761,6 +761,7 @@ def mergeTwoSortedLinkedList(l1, l2):
             smallerNode = l2
             l2 = l2.next
         currentNode.next = smallerNode
+        currentNode = currentNode.next
     # handle the longer linked list
     if l1 is not None:
         currentNode.next = l1
@@ -801,23 +802,6 @@ def findMedianSortedArrays(nums1, nums2):
         index = size / 2
         return (nums1[index - 1] + nums1[index])/ 2.0
 
-# in python 2.6, use module itertools
-def findPermutations(s):
-    """:type s: string or list"""
-    from itertools import permutations
-    cons = [''.join(p) for p in permutations(s)]
-    print(cons) # print all permutations
-    print(set(cons)) # print permuted list without duplicates
-
-def all_perms(elements):
-    if len(elements) <=1:
-        yield elements
-    else:
-        for perm in all_perms(elements[1:]):
-            for i in range(len(elements)):
-                # elements[0:1] works in both string and list contexts
-                yield perm[:i] + elements[0:1] + perm[i:]
-
 # function to compare two version
 # return 0 if s1 equals s2; -1 if s1 is less than s2; 1 if s1 is greater than s2
 # assume input strings include only alphabetic and numerical characters
@@ -841,7 +825,6 @@ def compareVersion(s1, s2):
         return -1
     else:
         return 1
-    # continue to handle the extra elements
 
 # Maximum difference between two elements such that larger element appears after the smaller number
 '''Input : arr = {2, 3, 10, 6, 4, 8, 1}
@@ -869,6 +852,28 @@ def maxDiff2(arr):
         if arr[i] < cur_min_num:
             cur_min_num = arr[i]
     return maxDiff
+
+# Given a string, sort it in decreasing order based on the frequency of characters.
+# if the frequency is same, any order of characters is good
+def frequency_sort_1(s):
+    if s is None:
+        raise ValueError
+    if len(s) == 0:
+        return ""
+    frequency = {}.fromkeys(set(s), 0)
+    for c in s:
+        frequency[c] += 1
+
+    sorted_tuple = sorted(frequency.items(), key=operator.itemgetter(1), reverse=True)
+    return "".join([item[0] * item[1] for item in sorted_tuple])
+
+def frequency_sort_2(s):
+    from collections import Counter
+    frequency, c2 = Counter(s), {}
+    for k, v in frequency.items():
+        c2.setdefault(v, []).append(k * v)  # c2'key is the frequency of each character
+
+    return "".join(["".join(c2[i]) for i in range(len(s), -1, -1) if i in c2])
 
 #
 #      1
@@ -1044,29 +1049,6 @@ level_order_traversal(root)
 mirror_tree(root)
 print("\nMirrored Level Order Traversal:", end = "")
 level_order_traversal(root)
-
-# Given a string, sort it in decreasing order based on the frequency of characters.
-# if the frequency is same, any order of characters is good
-def frequencySort(s):
-    if s is None:
-        raise ValueError
-    if len(s) == 0:
-        return ""
-    frequency = {}.fromkeys(set(s), 0)
-    for c in s:
-        frequency[c] += 1
-
-    sorted_tuple = sorted(frequency.items(), key=operator.itemgetter(1), reverse=True)
-    return "".join([item[0] * item[1] for item in sorted_tuple])
-
-def frequencySort2(s):
-    from collections import Counter
-    frequency, c2 = Counter(s), {}
-    for k, v in frequency.items():
-        c2.setdefault(v, []).append(k * v)  # c2'key is the frequency of each character
-
-    return "".join(["".join(c2[i]) for i in range(len(s), -1, -1) if i in c2])
-
 
 '''
 Binary Search Tree is a node-based binary tree data structure which has the following properties:

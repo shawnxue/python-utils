@@ -50,3 +50,20 @@ def findLadders(start, end, dict):
     # back tracking, to construct the result, result is list, you can pass it as reference like java, but not string
     backTrace(end, start, result, my_map)
     return result
+
+# in python 2.6, use module itertools
+def findPermutations(s):
+    """:type s: string or list"""
+    from itertools import permutations
+    cons = [''.join(p) for p in permutations(s)]
+    print(cons) # print all permutations
+    print(set(cons)) # print permuted list without duplicates
+
+def all_perms(elements):
+    if len(elements) <=1:
+        yield elements
+    else:
+        for perm in all_perms(elements[1:]):
+            for i in range(len(elements)):
+                # elements[0:1] works in both string and list contexts
+                yield perm[:i] + elements[0:1] + perm[i:]
