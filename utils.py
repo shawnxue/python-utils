@@ -1075,7 +1075,7 @@ class TreeNode(object):
         self.left = None
         self.right = None
 
-def getCount(root, low, high):
+def bst_count(root, low, high):
     # base case
     if root is None:
         return 0
@@ -1084,11 +1084,11 @@ def getCount(root, low, high):
         return 1
 
     if low <= root.value <= high: # low <= root.value and root.value <= high:
-        return 1 + getCount(root.left, low, high) + getCount(root.right, low, high)
+        return 1 + bst_count(root.left, low, high) + bst_count(root.right, low, high)
     elif root.value < low:
-        return getCount(root.right, low, high)
+        return bst_count(root.right, low, high)
     else: # root.value > high
-        return getCount(root.left, low, high)
+        return bst_count(root.left, low, high)
 
 def bst_insert(root, key):
     if root is None:
@@ -1109,7 +1109,7 @@ def bst_search(root, key):
 
 # Given a root node reference of a BST and a key (target value), delete the node with the given key in the BST.
 # Return the root node reference (possibly updated) of the BST
-def deleteNodeFromBST(root, key):
+def bst_delete(root, key):
     # node in the BST
     class TreeNode(object):
         def __init__(self, val, n):
@@ -1136,9 +1136,9 @@ def deleteNodeFromBST(root, key):
     if root is None:
         return None
     if key < root.value:
-        root.left = deleteNodeFromBST(root.left,  key)
+        root.left = bst_delete(root.left,  key)
     elif key > root.value:
-        root.right = deleteNodeFromBST(root.right, key)
+        root.right = bst_delete(root.right, key)
     else:
         if (root.left is None) and (root.right is None):  # no left and right subtree
             return None
@@ -1149,14 +1149,14 @@ def deleteNodeFromBST(root, key):
         else:  # root has both left and right subtree
             minNodeInRightSubTree = findMin(root.right)
             root.value = minNodeInRightSubTree.value
-            root.right = deleteNodeFromBST(root.right, minNodeInRightSubTree.value)
+            root.right = bst_delete(root.right, minNodeInRightSubTree.value)
 
     return root
 
 # bst is balanced if the difference of left size and right size is at most 1
 def is_bst_balanced(root) -> bool:
     # returns (height, is_balanced)
-    def check_balance(node) -> (int, bool):
+    def check_balance(node) -> tuple[int, bool]:
         if node is None:
             return 0, True
 
@@ -1240,8 +1240,17 @@ def get_bst_subtree_heights(root):
     right_tree_height = get_height(root.right)
     return (left_tree_height, right_tree_height)
 
-# l is the first node of the list, this function can remove multiple matched key
-def removeNodeFromList(l, key):
+# identical tree, not only node data, but also structure
+# time complexicity: worst case Linear, O(n), balanced tree O(logn). space complexcity: O(height)
+def isTreeIdentical(root1, root2):
+    if root1 is None and root2 is None:
+        return True
+    if root1 is not None and root2 is not None:
+        return (root1.data == root2.data and isTreeIdentical(root1.left, root2.left) and isTreeIdentical(root1.right, root2.right))
+    return False
+
+# l is the first node of the linked list, this function can remove multiple matched key
+def removeNodeFromLinkedList(l, key):
     class ListNode(object):  # single list node
         def __init__(self, value):
             self.value = value
@@ -1263,61 +1272,36 @@ def removeNodeFromList(l, key):
                 pre_node = cur_node
             cur_node = cur_node.next
     return l
+def parse_parameters_from_cmd_line(proxyconfig):
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:], "h",
+            ["help", "keypregenerated=", "sslkey=", "sslcertreq=", "sslcert=", "sslchaincert=",
+             "appip=", "domainname=", "modjkport=", "usetemplate"
+             ]
+        )
+    except getopt.GetoptError as err:
+        print(err)
 
+    argCounter = 0
+    requiredArgs = 8
+    # don't need to handle the --usetemplate case, that is dealt with in the main
+    for o, a in opts:
+        if o == "--keypregenerated":
+            if a.lower() == "yes" or a.lower() == "no":
+                proxyconfig.keyPreGen = a.lower()
+                argCounter = argCounter + 1
+        elif o == "--sslkey":
+            proxyconfig.sslkey = a
+            argCounter = argCounter + 1
+        elif o == "--sslcertreq":
+            proxyconfig.sslcertreq = a
+            argCounter = argCounter + 1
+        elif o in ("-h", "--help"):
+            print("help message")
 
-# Design and implement a data structure for Least Frequently Used (LFU) cache.
-# It should support the following operations: get and set. Capacity is applied
-# get(key) - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.
-# set(key, value) - Set or insert the value if the key is not already present. When the cache reaches its capacity,
-# it should invalidate the least frequently used item before inserting a new item. For the purpose of this problem,
-# when there is a tie (i.e., two or more keys that have the same frequency), the least recently used key would be evicted.
-def leastFrequencyUsedDesignOld():
-    class LFUCacheOld(object):
-        def __init__(self, capacity):
-            self.capacity = capacity
-            self.content = dict()  # store the pair of key, value
-            self.lfu_stack = list()  # the least frequently used key is in the beginning, and latest used key is at the end
-
-        def get(self, key):
-            if key in self.content.keys():
-                self.updateFrequency(key)
-                return self.content(key)
-            else:
-                return -1
-
-
-        def set(self, key, value):
-            if len(self.content) >= self.capacity:
-                self.evictLFUItem()
-
-            self.content[key] = value
-            self.updateFrequency()
-
-        # update frequency, put latest used key (get/set) at the end
-        def updateFrequency(self, key):
-            if key in self.lfu_stack:
-                self.lfu_stack.remove(key)
-
-            self.lfu_stack.append(key)
-
-        # sort the cache by value, and return sorted dict
-        def sortContentByValue(self):
-            sorted_tuple = sorted(self.content.items(), key = operator.itemgetter(1))
-            sorted_content = {}
-            for item in sorted_tuple:
-                sorted_content[item(0)] = item[1]
-            return sorted_content
-
-        # sort the cache by value, split it into two lists: keys and values
-        def convertDictToLists(self):
-            return [], []
-
-        def evictLFUItem(self):
-            removed_key = self.lfu_stack.pop(0)
-            del self.content[removed_key]
-    # end of class LFUCache
-    # run some tests here
-    pass
+    if argCounter != requiredArgs and argCounter != 0:
+        print('help message')
 
 # LRU
 def leastRecentlyUsedDesignNew():
@@ -1371,101 +1355,6 @@ def leastRecentlyUsedDesignNew():
     cache1.printcache()
     cache1.set(20)
     cache1.printcache()
-    pass
-
-def parse_parameters_from_cmd_line(proxyconfig):
-    try:
-        opts, args = getopt.getopt(
-            sys.argv[1:], "h",
-            ["help", "keypregenerated=", "sslkey=", "sslcertreq=", "sslcert=", "sslchaincert=",
-             "appip=", "domainname=", "modjkport=", "usetemplate"
-             ]
-        )
-    except getopt.GetoptError as err:
-        print(err)
-
-    argCounter = 0
-    requiredArgs = 8
-    # don't need to handle the --usetemplate case, that is dealt with in the main
-    for o, a in opts:
-        if o == "--keypregenerated":
-            if a.lower() == "yes" or a.lower() == "no":
-                proxyconfig.keyPreGen = a.lower()
-                argCounter = argCounter + 1
-        elif o == "--sslkey":
-            proxyconfig.sslkey = a
-            argCounter = argCounter + 1
-        elif o == "--sslcertreq":
-            proxyconfig.sslcertreq = a
-            argCounter = argCounter + 1
-        elif o in ("-h", "--help"):
-            print("help message")
-
-    if argCounter != requiredArgs and argCounter != 0:
-        print('help message')
-
-def get_mount_point(pathname):
-    """Get the mount point of the filesystem containing pathname"""
-    pathname= os.path.normcase(os.path.realpath(pathname))
-    parent_device= path_device= os.stat(pathname).st_dev
-    while parent_device == path_device:
-        mount_point= pathname
-        pathname= os.path.dirname(pathname)
-        if pathname == mount_point: break
-        parent_device= os.stat(pathname).st_dev
-    return mount_point
-
-def get_mounted_device(pathname):
-    """Use /proc/mounts to get the device mounted at pathname"""
-    pathname= os.path.normcase(pathname) # might be unnecessary here
-    try:
-        with open("/proc/mounts", "r") as ifp:
-            for line in ifp:
-                fields= line.rstrip('\n').split()
-                # note that line above assumes that
-                # no mount points contain whitespace
-                if fields[1] == pathname:
-                    return fields[0]
-    except EnvironmentError:
-        raise EnvironmentError
-    return None # explicit
-
-def get_fs_freespace(pathname):
-    """Get the free space of the filesystem containing pathname"""
-    stat= os.statvfs(pathname)
-    # use f_bfree for superuser, or f_bavail if filesystem has reserved space for superuser
-    return stat.f_bfree*stat.f_bsize
-
-
-class LFUCache(object):
-    def __init__(self, capacity):
-        self.capacity = capacity
-        self.cache = {} # {key: cache_node}, key here is same as the key used in cache_node
-        self.freq_link_head = None # how many times a node has been accessed (get)
-
-    # get the node value if key exists, and modify this key's frequency (move it forward along the freq_node list)
-    def get(self, key):
-        if key in self.cache:
-            cache_node = self.cache[key]
-            freq_node = cache_node.freq_node
-            self.move_forward(cache_node,  freq_node)
-            return cache_node.value
-        else:
-            return -1
-
-    def set(self, key, value, freq_node, pre, nxt):
-        pass
-
-    # move the cache node along the freq_link (double link), means: increase access time by 1
-    def move_forward(self, cache_node, cur_freq_node):
-        if cur_freq_node.nxt is not None: # current freq node is not the last node
-            if cur_freq_node.freq == cur_freq_node.nxt.freq: # append the cache node to next freq node
-                pass
-            else: # create a new freq node and insert after cur freq_node
-                pass
-        else: # create a new freq node and insert after cur freq_node
-            pass
-
 
 class LFUCache2(object):
     import sys
@@ -1711,21 +1600,6 @@ def disk_partitions(all_partition = False):
             retlist.append(ntuple)
     return retlist
 
-def disk_usage(path):
-    """Return disk usage associated with path."""
-    usage_ntuple = namedtuple('usage',  'total used free percent')
-    st = os.statvfs(path)
-    free = (st.f_bavail * st.f_frsize)
-    total = (st.f_blocks * st.f_frsize)
-    used = (st.f_blocks - st.f_bfree) * st.f_frsize
-    try:
-        percent = ret = (float(used) / total) * 100
-    except ZeroDivisionError:
-        percent = 0
-    # the percentage is -5% than what shown by df due to reserved blocks that we are currently not considering:
-    # http://goo.gl/sWGbH
-    return usage_ntuple(total, used, free, round(percent, 1))
-
 def is_ipv4(ip):
     ls = ip.split(".")
     if len(ls) == 4 and all(g.isdigit() and str(int(g)) == g and 0 <= int(g) <= 255 for g in ls):
@@ -1760,8 +1634,8 @@ def reverse_words(s):
 def print_to_text(base_url):
     import requests
     from bs4 import BeautifulSoup
-    r = requests.get(base_url)
-    soup = BeautifulSoup(r.text, features="html.parser")
+    resp = requests.get(base_url)
+    soup = BeautifulSoup(resp.text, features="html.parser")
     with open("less.txt", "w") as f:
         for paragraph in soup.findall(dir='ltr'):
             f.write(paragraph.text.replace("<span>", ""))
@@ -1771,7 +1645,7 @@ def calculateAngle(h,m):
   if (h < 0 or m < 0 or h > 24 or m > 60):
     print('Wrong input')
   if (m == 60):
-    h += 1;
+    h += 1
   m = m % 60
   h = h % 12
   # Calculate the angles moved by hour and minute hands with reference to 12:00
@@ -1789,15 +1663,6 @@ def calculateAngle(h,m):
 # print('2:0 Angle ', calculateAngle(2,0))
 # print('2:60 Angle ', calculateAngle(2,60))
 # print('13:10 Angle ', calculateAngle(13,10))
-
-# identical tree, not only node data, but also structure
-# time complexicity: worst case Linear, O(n), balanced tree O(logn). space complexcity: O(height)
-def isTreeIdentical(root1, root2):
-    if root1 is None and root2 is None:
-        return True
-    if root1 is not None and root2 is not None:
-        return (root1.data == root2.data and isTreeIdentical(root1.left, root2.left) and isTreeIdentical(root1.right, root2.right))
-    return False
 
 # find the maximum sum of any contiguous subarray in an integer array
 # The runtime complexity of this solution is linear, O(n).The memory complexity of this solution is constant, O(1).
