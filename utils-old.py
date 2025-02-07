@@ -198,3 +198,105 @@ def disk_usage(path):
     # the percentage is -5% than what shown by df due to reserved blocks that we are currently not considering:
     # http://goo.gl/sWGbH
     return usage_ntuple(total, used, free, round(percent, 1))
+
+import time
+from collections import deque
+from threading import Lock
+
+class RateLimiter:
+    def __init__(self, max_requests, window_size_seconds):
+        """
+        Initialize the RateLimiter.
+
+        :param max_requests: Maximum number of requests allowed in the time window.
+        :param window_size_seconds: Size of the time window in seconds.
+        """
+        self.max_requests = max_requests
+        self.window_size_seconds = window_size_seconds
+        self.request_timestamps = deque()  # Stores timestamps of recent requests
+        self.lock = Lock()
+
+    def allow_request(self):
+        """
+        Check if a new request is allowed based on the sliding window.
+
+        :return: True if the request is allowed, False otherwise.
+        """
+        with self.lock:
+            current_time = time.time()
+
+            # Remove timestamps that are outside the current window
+            while self.request_timestamps and self.request_timestamps[0] <= current_time - self.window_size_seconds:
+                self.request_timestamps.popleft()
+
+            # Check if the number of requests in the current window exceeds the limit
+            if len(self.request_timestamps) < self.max_requests:
+                self.request_timestamps.append(current_time)  # Record the new request
+                return True
+            else:
+                return False
+
+# Example usage
+if __name__ == "__main__":
+    # Create a rate limiter that allows 5 requests per 10 seconds
+    rate_limiter = RateLimiter(max_requests=5, window_size_seconds=10)
+
+    # Simulate a series of requests
+    for i in range(15):
+        if rate_limiter.allow_request():
+            print(f"Request {i + 1}: Allowed")
+        else:
+            print(f"Request {i + 1}: Denied")
+        time.sleep(1)  # Simulate a delay between requests
+
+import time
+from threading import Lock
+
+class RateLimiter:
+    def __init__(self, max_tokens, refill_rate):
+        """
+        Initialize the RateLimiter.
+
+        :param max_tokens: Maximum number of tokens the bucket can hold.
+        :param refill_rate: Number of tokens added to the bucket per second.
+        """
+        self.max_tokens = max_tokens
+        self.refill_rate = refill_rate
+        self.tokens = max_tokens
+        self.last_refill_time = time.time()
+        self.lock = Lock()
+
+    def _refill(self):
+        """Refill the bucket with tokens based on the elapsed time."""
+        now = time.time()
+        elapsed_time = now - self.last_refill_time
+        tokens_to_add = elapsed_time * self.refill_rate
+        self.tokens = min(self.tokens + tokens_to_add, self.max_tokens)
+        self.last_refill_time = now
+
+    def allow_request(self, tokens_required=1):
+        """
+        Check if a request can be allowed based on the available tokens.
+
+        :param tokens_required: Number of tokens required for the request.
+        :return: True if the request is allowed, False otherwise.
+        """
+        with self.lock:
+            self._refill()
+            if self.tokens >= tokens_required:
+                self.tokens -= tokens_required
+                return True
+            return False
+
+# Example usage
+if __name__ == "__main__":
+    # Create a rate limiter with a maximum of 10 tokens and a refill rate of 1 token per second
+    rate_limiter = RateLimiter(max_tokens=10, refill_rate=1)
+
+    # Simulate a series of requests
+    for i in range(15):
+        if rate_limiter.allow_request():
+            print(f"Request {i + 1}: Allowed")
+        else:
+            print(f"Request {i + 1}: Denied")
+        time.sleep(0.5)  # Simulate a delay between requests
