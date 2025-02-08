@@ -2360,14 +2360,14 @@ def alter_array_sort(numbers):
                 return False
         return True
     new_numbers = [0] * len(numbers)
-    input_ind, cur_ind, last_ind = 0, 0, len(numbers) - 1
-    while(input_ind < last_ind):
-        new_numbers[cur_ind] = numbers[input_ind]
-        cur_ind += 1
-        new_numbers[cur_ind] = numbers[last_ind]
-        cur_ind += 1
-        input_ind += 1
-        last_ind -= 1
+    input_idx, cur_idx, last_idx = 0, 0, len(numbers) - 1
+    while(input_idx < last_idx):
+        new_numbers[cur_idx] = numbers[input_idx]
+        cur_idx += 1
+        new_numbers[cur_idx] = numbers[last_idx]
+        cur_idx += 1
+        input_idx += 1
+        last_idx -= 1
     if is_strict_ascending(new_numbers):
         return True
     else:
@@ -2425,13 +2425,13 @@ Since the value in the cell (3, 2) is 0, all of its neighboring cells ((2, 1), (
 
 '''
 Tetris-inspired question
-You are given a matrix of integers field of size height × width representing a game field, and also a matrix of integers figure of size 3 × 3 representing a figure. Both matrices contain only 0s and 1s, where 1 means that the cell is occupied, and 0 means that the cell is free.
+You are given a matrix of integers field of size height x width representing a game field, and also a matrix of integers figure of size 3 x 3 representing a figure. Both matrices contain only 0s and 1s, where 1 means that the cell is occupied, and 0 means that the cell is free.
 You choose a position at the top of the game field where you put the figure and then drop it down. The figure falls down until it either reaches the ground (bottom of the field) or lands on an occupied cell, which blocks it from falling further. After the figure has stopped falling, some of the rows in the field may become fully occupied.
 Your task is to find the dropping position such that at least one full row is formed. As a dropping position, you should return the column index of the cell in the game field which matches the top left corner of the figure’s 3 × 3 matrix. If there are multiple dropping positions satisfying the condition, feel free to return any of them. If there are no such dropping positions, return -1.
-Note: The figure must be dropped so that its entire 3 × 3 matrix fits inside the field, even if part of the matrix is empty.
+Note: The figure must be dropped so that its entire 3 x 3 matrix fits inside the field, even if part of the matrix is empty.
 This solution starts by defining some dimensions that will be important for the problem. Then, for every valid dropping position—that is, columns in range(width - figure_size + 1)—the code goes row by row, seeing how far the figure will go until it will “stop.”
-To do this, it peeks at the next row and asks: can the figure fit there? If not, it stops at the previous row. The figure doesn’t fit if there is a 1 in the same place in both the figure and the field (offset by the row). The loop can stop when row == height - figure_size + 1, because then the bottom of the figure will have hit the bottom of the field.
-Once the code figures out the last row the figure can drop to before it can’t fit anymore, it’s time to see if there’s a fully-filled row created anywhere. From where the figure “stopped,” the code iterates through the field and figure arrays row by row, checking to see if together, they’ve created a filled row. Cleverly, the code sets row_filled = True and then marks it False if one or both of these conditions are met:
+To do this, it peeks at the next row and asks: can the figure fit there? If not, it stops at the previous row. The figure doesnt fit if there is a 1 in the same place in both the figure and the field (offset by the row). The loop can stop when row == height - figure_size + 1, because then the bottom of the figure will have hit the bottom of the field.
+Once the code figures out the last row the figure can drop to before it can't fit anymore, it's time to see if there's a fully-filled row created anywhere. From where the figure “stopped,” the code iterates through the field and figure arrays row by row, checking to see if together, they’ve created a filled row. Cleverly, the code sets row_filled = True and then marks it False if one or both of these conditions are met:
 Any of the field cells in the row are empty (not 1)
 Any of the figure cells in the row are empty (not 1)
 '''
@@ -2503,24 +2503,15 @@ def find_digit_frequency_from_nums(a):
 You are given an array of strings arr. Your task is to construct a string from the words in arr, starting with the 0th character
 from each word (in the order they appear in arr), followed by the 1st character, then the 2nd character, etc. If one of the words doesn't
 have an ith character, skip that word.
-
 Return the resulting string.
-
 [input] array.string arr
-
 An array of strings containing alphanumeric characters.
-
 Guaranteed constraints:
 1 ≤ arr.length ≤ 100,
 1 ≤ arr[i].length ≤ 100.
-
 [output] string
-
 Return the resulting string.
-
-
 Example
-
     For arr = ["Daisy", "Rose", "Hyacinth", "Poppy"], the output should be solution(arr) = "DRHPaoyoisapsecpyiynth".
         First, we append all 0th characters and obtain string "DRHP";
         Then we append all 1st characters and obtain string "DRHPaoyo";
@@ -2535,6 +2526,9 @@ def contruct_string_from_each_word_in_array(arr):
     for i in range(1, len(arr)):
         if max_len < len(arr[i]):
             max_len = len(arr[i])
+    # max length word can also be gotten by this:
+    max_len_word = max(arr, key=len)
+    max_len = len(max_len_word)
     i = 0 # i is index of word, j is in index of array
     while i < max_len:
         for j in range(len(arr)):
@@ -2546,17 +2540,12 @@ def contruct_string_from_each_word_in_array(arr):
     return result
 
 '''Given an array of integers a, your task is to find how many of its contiguous subarrays of length m contain a pair of integers with a sum equal to k.
-
 More formally, given the array a, your task is to count the number of indices 0 ≤ i ≤ a.length - m such that a subarray [a[i], a[i + 1], ..., a[i + m - 1]]
 contains at least one pair (a[s], a[t]), where:
-
     s ≠ t
     a[s] + a[t] = k
-
 Example
-
     For a = [2, 4, 7, 5, 3, 5, 8, 5, 1, 7], m = 4, and k = 10, the output should be solution(a, m, k) = 5.
-
     Let's consider all subarrays of length m = 4 and see which fit the description conditions:
         Subarray a[0..3] = [2, 4, 7, 5] doesn't contain any pair of integers with a sum of k = 10. Note that although the pair (a[3], a[3]) has the sum 5 + 5 = 10, it doesn't fit the requirement s ≠ t.
         Subarray a[1..4] = [4, 7, 5, 3] contains the pair (a[2], a[4]), where a[2] + a[4] = 7 + 3 = 10.
@@ -2565,42 +2554,27 @@ Example
         Subarray a[4..7] = [3, 5, 8, 5] contains the pair (a[5], a[7]), where a[5] + a[7] = 5 + 5 = 10.
         Subarray a[5..8] = [5, 8, 5, 1] contains the pair (a[5], a[7]), where a[5] + a[7] = 5 + 5 = 10.
         Subarray a[6..9] = [8, 5, 1, 7] doesn't contain any pair with a sum of k = 10.
-
     So the answer is 5, because there are 5 contiguous subarrays that contain a pair with a sum of k = 10.
-
     For a = [15, 8, 8, 2, 6, 4, 1, 7], m = 2, and k = 8, the output should be solution(a, m, k) = 2.
-
     There are 2 subarrays satisfying the description conditions:
         a[3..4] = [2, 6], where 2 + 6 = 8
         a[6..7] = [1, 7], where 1 + 7 = 8
-
 Input/Output
-
     [execution time limit] 4 seconds (py3)
-
     [input] array.integer a
-
     The given array of integers.
-
     Guaranteed constraints:
     2 ≤ a.length ≤ 105,
     0 ≤ a[i] ≤ 109.
-
     [input] integer m
-
     An integer representing the length of the contiguous subarrays being considered.
-
     Guaranteed constraints:
     2 ≤ m ≤ a.length.
-
     [input] integer k
     An non-negative integer value representing the sum of the pairs we're trying to find within each subarray.
-
 Guaranteed constraints:
 0 ≤ k ≤ 109.
-
-[output] integeri
-    '''
+[output] integer'''
 def substring_sum(a, m, k):
     result = 0
     def count_two_sum(arr, target):
