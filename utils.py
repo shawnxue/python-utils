@@ -2713,7 +2713,7 @@ def power_of_2(numbers):
     for element in numbers:
          counts[element] += 1
          for two_power in range(21): # the loop checks for sums of all of the powers of two that are less than 2**21. Because numbers[i] ≤ 10**6, there is no way that two elements could sum to 221
-            # To calculate the powers of two, the code uses a left shift bitwise operator: 1 << two_power, in Python is the same as 2two_power.
+            # To calculate the powers of two, the code uses a left shift bitwise operator: 1 << two_power, in Python is the same as two_power.
             second_element = (1 << two_power) - element
             answer += counts[second_element]
     return answer
@@ -2851,28 +2851,28 @@ def encrypt_text(text):
     return encrypted
 
 def swapPairs(head: Optional[Node]) -> Optional[Node]:
-        if not head or not head.next:
-            return head
+    if not head or not head.next:
+        return head
 
-        dummy = Node(0)
-        dummy.next = head
-        prev, current = dummy, head
+    dummy = Node(0)
+    dummy.next = head
+    prev, current = dummy, head
 
-        while current and current.next:
-            # Store the next two nodes
-            first = current
-            second = current.next
+    while current and current.next:
+        # Store the next two nodes
+        first = current
+        second = current.next
 
-            # Swap the nodes
-            prev.next = second
-            first.next = second.next
-            second.next = first
+        # Swap the nodes
+        prev.next = second
+        first.next = second.next
+        second.next = first
 
-            # Move pointers forward
-            prev = first
-            current = first.next
+        # Move pointers forward
+        prev = first
+        current = first.next
 
-        return dummy.next
+    return dummy.next
 
 # dividing intervals into the minimum number of groups, such that no intervals in a group overlap
 def minGroups(intervals: list[list[int]]) -> int:
@@ -2971,17 +2971,18 @@ def replace_char_in_word(input_str):
         return new_words[0]
     else:
         return new_words[-1] + ' ' + ' '.join(new_words[0:-1])
-    return result
 
 def robot_position(commands: str) -> str:
     # Initialize the starting position at 0
     position = 0
     # Iterate through the commands
     for command in commands:
-        if command == 'L':
+        if command.lower() == 'L':
             position -= 1  # Move one step to the left
-        elif command == 'R':
+        elif command.lower() == 'R':
             position += 1  # Move one step to the right
+        else:
+            continue
     # Determine the final position
     if position < 0:
         return 'L'  # The robot is to the left of the starting point
@@ -3002,13 +3003,13 @@ def replace_nth_consonant(message: str, n: int) -> str:
             return char  # If it's not a consonant, return it as is
 
         # Define the list of consonants
-        consonants = "bcdfghjklmnpqrstvwxyz"
-        consonants_upper = consonants.upper()
+        consonants_lower = "bcdfghjklmnpqrstvwxyz"
+        consonants_upper = consonants_lower.upper()
 
         # Find the next consonant in the sequence
         if char.islower():
-            index = consonants.index(char)
-            return consonants[(index + 1) % len(consonants)]
+            index = consonants_lower.index(char)
+            return consonants_lower[(index + 1) % len(consonants_lower)]
         else:
             index = consonants_upper.index(char)
             return consonants_upper[(index + 1) % len(consonants_upper)]
@@ -3271,7 +3272,7 @@ def three_after_character(c):
     else:
         return c # return if it's not a character
 # find the charater that is the oppsite of input character
-def opposite_character(c):
+def opposite_char(c):
     if 'a' <= c <= 'z': # or use if c.islower()
         return chr(ord('a') + (ord('z') - ord(c)))
     elif 'A' <= c <= 'Z': # or use if c.isupper()
