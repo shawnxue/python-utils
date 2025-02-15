@@ -3526,11 +3526,10 @@ def get_min_manhattan(array1, array2):
 # input s = "BCAAB", the output should be ['B', 'A', 'A', 'B', 'C']
 def pair_and_remove(s):
     result = []
+    if len(s) == 1:
+        result.append(s)
+        return result
     while True:
-        if len(s) == 1:
-            result.append(s)
-            return result
-
         temp_arr = []
         for i in range(0, len(s), 2):
             if i + 1 < len(s):
@@ -3638,10 +3637,10 @@ def two_big_number_product(num1, num2):
             line.append(str(carry))
         result.append(line)
         j -= 1
-    column = len(result[-1])
+    max_column = len(result[-1])
     line = len(result)
-    j, res, carry = 0, [0] * column, 0
-    while j < column:
+    j, res, carry = 0, [0] * max_column, 0
+    while j < max_column:
         i, total = 0, 0
         while i < line:
             cur = int(result[i][j]) if j < len(result[i]) else 0
@@ -3713,9 +3712,9 @@ def merge_sort(lst):
     right_half = merge_sort(lst[mid:])
 
     # Merge the two sorted halves
-    return merge(left_half, right_half)
+    return merge_sorted_array(left_half, right_half)
 
-def merge(left, right):
+def merge_sorted_array(left, right):
     result = []
     i = 0
     j = 0
@@ -4574,3 +4573,38 @@ Output:
 Car engine started!
 Car is driving!
 """
+
+# use output of vmstat as input, and then sort
+import subprocess
+import pandas as pd
+def get_vmstat_output():
+    """Runs vmstat command and returns the output as a list of lists."""
+    result = subprocess.run(['vmstat'], capture_output=True, text=True)
+    lines = result.stdout.splitlines()
+
+    # Extract headers and data
+    headers = lines[1].split()
+    data = [line.split() for line in lines[2:]]
+
+    return headers, data
+
+def sort_vmstat(headers, data, sort_by='cpu'):
+    """Sorts vmstat output by the specified column."""
+    df = pd.DataFrame(data, columns=headers)
+    df = df.apply(pd.to_numeric, errors='ignore')
+
+    if sort_by in df.columns:
+        df = df.sort_values(by=sort_by, ascending=False)
+    else:
+        print(f"Warning: Column '{sort_by}' not found. Displaying unsorted data.")
+
+    return df
+
+def main():
+    headers, data = get_vmstat_output()
+    sort_column = 'cpu'  # Change this to the desired column (e.g., 'r', 'b', 'us', 'sy', 'id')
+    sorted_df = sort_vmstat(headers, data, sort_by=sort_column)
+    print(sorted_df)
+
+if __name__ == "__main__":
+    main()
