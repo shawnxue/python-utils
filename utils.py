@@ -4035,7 +4035,7 @@ def spiral_traverse_and_vowels(grid):
     rows = len(grid)
     cols = len(grid[0])
     r, c = 0, 0
-    last_left, last_top, last_right, last_bottom = 0, 0, cols - 1, cols - 1
+    last_left, last_top, last_right, last_bottom = 0, 0, cols - 1, rows - 1
     while last_left <= last_right and last_top <= last_bottom:
         # move right
         for c in range(last_left, last_right+1):
@@ -4177,7 +4177,7 @@ def find_substring_indices(S, K):
 
 # Both players are given the same string S. Both players have to make substrings using the letters of the string S,
 # Stuart has to make words starting with consonants, Kevin has to make words starting with vowels, The game ends when both
-#  players have made all possible substrings. A player gets +1 point for each occurrence of the substring in the string S.
+# players have made all possible substrings. A player gets +1 point for each occurrence of the substring in the string S.
 # solution 1 is better way, without generating all substrings.
 # For a character at position i, the number of substrings starting with that character is n - i,
 def minion_game_1(string):
