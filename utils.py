@@ -4326,27 +4326,28 @@ class RateLimiter:
         Initialize the rate limiter.
         :param max_requests: Maximum allowed requests within the time window.
         :param time_window: Time window in seconds.
+        :param requests: dict, key is "key"(property), value is an array, which each item is timestamp of each request
         """
         self.max_requests = max_requests
         self.time_window = time_window
         self.requests = defaultdict(list)
 
-    def is_allowed(self, key):
+    def is_allowed(self, property):
         """
-        Check if a request is allowed for the given key (e.g., IP or credit card).
-        :param key: Attribute to rate limit (e.g., an IP address or credit card).
+        Check if a request is allowed for the given property (e.g., IP address or credit card number).
+        :param property: Attribute to rate limit (e.g., an IP address or credit card).
         :return: True if allowed, False if rate-limited.
         """
         current_time = time.time()
-        request_times = self.requests[key]
+        request_times = self.requests[property]
 
         # Remove expired request timestamps outside the time window
-        while request_times and request_times[0] < current_time - self.time_window:
+        while request_times and request_times[0] <= current_time - self.time_window:
             request_times.pop(0)
 
         if len(request_times) < self.max_requests:
             request_times.append(current_time)
-            self.requests[key] = request_times
+            self.requests[property] = request_times
             return True
         else:
             return False
@@ -4357,10 +4358,10 @@ if __name__ == "__main__":
     # Create a rate limiter that allows 5 requests per 10 seconds
     rate_limiter = RateLimiter(max_requests=5, time_window=10)
 
-    test_key = "192.168.0.1"  # Example key (e.g., IP address)
+    test_property= "192.168.0.1"  # Example key (e.g., IP address)
 
     for i in range(10):
-        if rate_limiter.is_allowed(test_key):
+        if rate_limiter.is_allowed(test_property):
             print(f"Request {i + 1} allowed.")
         else:
             print(f"Request {i + 1} rate-limited.")
@@ -4391,6 +4392,7 @@ def test_rate_limiter():
 
 if __name__ == "__main__":
     test_rate_limiter()
+
 import heapq
 class MiddleElementFinder:
     def __init__(self):
