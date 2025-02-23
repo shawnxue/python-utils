@@ -392,10 +392,7 @@ def countBits(num):
 
 # return the least common multiple
 def lcm(x, y):
-    if x > y:
-        greater = x
-    else:
-        greater = y
+    greater = x if x > y else y
     while True:
         if greater % x == 0 and greater % y == 0:
             break
@@ -4394,6 +4391,7 @@ if __name__ == "__main__":
     test_rate_limiter()
 
 import heapq
+# headpop alwasy pop the min number in the queue. When push, it will put the number in the begning (0) if the number is less than others
 class MiddleElementFinder:
     def __init__(self):
         self.heaps = [], []
@@ -4605,6 +4603,37 @@ def sort_vmstat(headers, data, sort_by='cpu'):
 def main():
     headers, data = get_vmstat_output()
     sort_column = 'cpu'  # Change this to the desired column (e.g., 'r', 'b', 'us', 'sy', 'id')
+    sorted_df = sort_vmstat(headers, data, sort_by=sort_column)
+    print(sorted_df)
+
+if __name__ == "__main__":
+    main()
+
+def get_mock_vmstat_output():
+    """Generates mock vmstat-like output for environments that do not support subprocess."""
+    headers = ["r", "b", "swpd", "free", "buff", "cache", "si", "so", "bi", "bo", "in", "cs", "us", "sy", "id", "wa", "st"]
+    data = [
+        [0, 0, 100, 200000, 30000, 400000, 0, 0, 10, 20, 100, 200, 5, 2, 90, 3, 0],
+        [1, 0, 150, 180000, 25000, 390000, 0, 0, 15, 25, 110, 220, 6, 3, 88, 3, 0],
+        [0, 1, 120, 190000, 26000, 380000, 0, 0, 12, 18, 105, 210, 4, 2, 91, 2, 1]
+    ]
+    return headers, data
+
+def sort_vmstat(headers, data, sort_by='us'):
+    """Sorts vmstat output by the specified column."""
+    df = pd.DataFrame(data, columns=headers)
+    df = df.apply(pd.to_numeric, errors='ignore')
+
+    if sort_by in df.columns:
+        df = df.sort_values(by=sort_by, ascending=False)
+    else:
+        print(f"Warning: Column '{sort_by}' not found. Displaying unsorted data.")
+
+    return df
+
+def main():
+    headers, data = get_mock_vmstat_output()
+    sort_column = 'us'  # Change this to the desired column (e.g., 'r', 'b', 'us', 'sy', 'id')
     sorted_df = sort_vmstat(headers, data, sort_by=sort_column)
     print(sorted_df)
 
