@@ -1474,7 +1474,7 @@ class FreqNode(object):
     """these functions handle operations of cache node"""
     # append a cache node to tail of cache_node list
     def append_to_cache_node_tail(self, cache_node):
-        if freq_node is None:
+        if cache_node is None:
             return
         cache_node.freq_node = self
         if self.cache_tail is None and self.cache_head is None: # no cache node for this freq_node
@@ -1646,7 +1646,7 @@ def calculateAngle(h,m):
   m = m % 60
   h = h % 12
   # Calculate the angles moved by hour and minute hands with reference to 12:00
-  hour_angle = 0.5 * (h * 60 + m)
+  hour_angle = 0.5 * (h * 60 + m) # 30h + 0.5m (30 degree each hour, plug 0.5 degree for each minute between hours)
   minute_angle = 6 * m
   # Find the difference between two angles
   angle = abs(hour_angle - minute_angle)
