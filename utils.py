@@ -1917,10 +1917,7 @@ from pathlib import Path
 from urllib.request import urlopen, Request
 
 logger = logging.getLogger(__name__)
-
 types = {'image/jpeg', 'image/png'}
-
-
 def get_links(client_id):
     headers = {'Authorization': 'Client-ID {}'.format(client_id)}
     req = Request('https://api.imgur.com/3/gallery/random/random/', headers=headers, method='GET')
@@ -2200,9 +2197,10 @@ s_input = """photo.jpg, Warsaw, 2013-09-05 14:08:15\n\
 """
 def rename_pictures(input_s: str) -> str:
     import re
+    from collections import defaultdict
     result = list()
     lines = re.split(r"\n", input_s)
-    pictures = dict()
+    pictures = dict() # or pictures = defaultdict(list)
     for index, line in enumerate(lines):
         line = line.strip()
         if line == "":
@@ -2212,6 +2210,7 @@ def rename_pictures(input_s: str) -> str:
         extension = picture_info[0].strip().split(".")[1]
         date_taken = picture_info[2].strip()
         # each item in the array of city is a tuple
+        # or if you use defaultdict: pictures[city].append((extension, date_taken, index))
         if city in pictures:
             pictures[city].append((extension, date_taken, index))
         else:
@@ -2433,7 +2432,7 @@ Any of the field cells in the row are empty (not 1)
 Any of the figure cells in the row are empty (not 1)
 '''
 
-def tetris(field, figure):
+def mine_sweeper(field, figure):
    height = len(field)
    width = len(field[0])
    figure_size = len(figure)
