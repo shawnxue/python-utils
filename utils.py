@@ -2432,7 +2432,7 @@ Any of the field cells in the row are empty (not 1)
 Any of the figure cells in the row are empty (not 1)
 '''
 
-def mine_sweeper(field, figure):
+def tetris(field, figure):
    height = len(field)
    width = len(field[0])
    figure_size = len(figure)
@@ -2525,6 +2525,7 @@ def contruct_string_from_each_word_in_array(arr):
     # max length word can also be gotten by this:
     max_len_word = max(arr, key=len)
     max_len = len(max_len_word)
+    # or max_len = max(len(word) for word in arr)
     i = 0 # i is index of word, j is in index of array
     while i < max_len:
         for j in range(len(arr)):
@@ -2532,6 +2533,14 @@ def contruct_string_from_each_word_in_array(arr):
                 continue
             else:
                 result += arr[j][i]
+        i += 1
+    # another way
+    while i < max_len:
+        for word in arr:
+            if i >= len(word):
+                continue
+            else:
+                result += word[i]
         i += 1
     return result
 
