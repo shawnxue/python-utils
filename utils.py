@@ -2782,7 +2782,7 @@ def solution_1(parent_dir='/root/devops') -> str:
                     if filename not in output.keys():
                         output[filename] = list()
                     file = os.path.join(directory, filename)
-                    df = pd.read_csv(file, sep=" ", header=None)
+                    df = pd.read_csv(file, sep=" ", header=None) # none means there is no header in the csv file. If file has header, then header=1 by default
                     for index, row in df.iterrows():
                         firstname, lastname, score = row[0], row[1], row[2]
                         output[filename].append((firstname, lastname, score))
@@ -4331,11 +4331,13 @@ class RateLimiter:
         Initialize the rate limiter.
         :param max_requests: Maximum allowed requests within the time window.
         :param time_window: Time window in seconds.
-        :param requests: dict, key is "key"(property), value is an array, which each item is timestamp of each request
+        :param requests: dict, key is "key"(property), value is an array, which each item is timestamp of each request; alternatively, you can use a deque for value
         """
         self.max_requests = max_requests
         self.time_window = time_window
         self.requests = defaultdict(list)
+        self.requests_2 = defaultdict(deque)
+        self.lock = threading.Lock()  # To ensure thread-safety if used in a multi-threaded environment
 
     def is_allowed(self, property):
         """
@@ -4343,19 +4345,20 @@ class RateLimiter:
         :param property: Attribute to rate limit (e.g., an IP address or credit card).
         :return: True if allowed, False if rate-limited.
         """
-        current_time = time.time()
-        request_times = self.requests[property]
+        with self.lock:  # Ensure thread-safety
+            current_time = time.time()
+            request_times = self.requests[property]
 
-        # Remove expired request timestamps outside the time window
-        while request_times and request_times[0] <= current_time - self.time_window:
-            request_times.pop(0)
+            # Remove expired request timestamps outside the time window
+            while request_times and request_times[0] <= current_time - self.time_window:
+                request_times.pop(0)
 
-        if len(request_times) < self.max_requests:
-            request_times.append(current_time)
-            self.requests[property] = request_times
-            return True
-        else:
-            return False
+            if len(request_times) < self.max_requests:
+                request_times.append(current_time)
+                self.requests[property] = request_times
+                return True
+            else:
+                return False
 
 
 # Example usage
@@ -4397,6 +4400,67 @@ def test_rate_limiter():
 
 if __name__ == "__main__":
     test_rate_limiter()
+
+import time
+from threading import Lock
+from flask import Flask, request, jsonify
+class TokenBucket:
+    def __init__(self, capacity: int, rate: float):
+        """
+        Initialize the Token Bucket rate limiter.
+        :param capacity: Maximum number of tokens in the bucket.
+        :param rate: Tokens added per second.
+        """
+        self.capacity = capacity
+        self.tokens = capacity
+        self.rate = rate
+        self.last_refill_time = time.time()
+        self.lock = Lock()
+    
+    def _refill(self):
+        """Refill the bucket with tokens based on elapsed time."""
+        now = time.time()
+        elapsed = now - self.last_refill_time
+        self.tokens = min(self.capacity, self.tokens + elapsed * self.rate)
+        self.last_refill_time = now
+
+    def allow_request(self, tokens: int = 1) -> bool:
+        """
+        Attempt to consume tokens from the bucket.
+        :param tokens: Number of tokens required for the request.
+        :return: True if request is allowed, False if rate-limited.
+        """
+        with self.lock:
+            self._refill()
+            if self.tokens >= tokens:
+                self.tokens -= tokens
+                return True
+            return False
+
+# Flask API Integration
+app = Flask(__name__)
+rate_limiter = TokenBucket(capacity=10, rate=2)  # 10 tokens max, refills at 2 tokens/sec
+
+@app.route('/api', methods=['GET'])
+def api_endpoint():
+    if rate_limiter.allow_request():
+        return jsonify({"message": "Request Allowed"}), 200
+    else:
+        return jsonify({"error": "Too Many Requests"}), 429
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+# Example usage
+if __name__ == "__main__":
+    rate_limiter = TokenBucket(capacity=10, rate=2)  # 10 tokens max, refills at 2 tokens/sec
+    
+    for i in range(15):
+        if rate_limiter.allow_request():
+            print(f"Request {i + 1}: Allowed")
+        else:
+            print(f"Request {i + 1}: Rate Limited")
+        time.sleep(0.3)  # Simulating request intervals
 
 import heapq
 # headpop alwasy pop the min number in the queue. When push, it will put the number in the begning (0) if the number is less than others
