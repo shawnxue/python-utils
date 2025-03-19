@@ -160,6 +160,15 @@ def firstNonAlphabeticOrderChar(s):
       sorted_s = sorted_s[index+1:]
     else:
       return input[i] # this is the first non alphabetic order character in the string
+  for c in s:
+    if c == pre_c:
+        continue
+    if c in sorted_s:
+      pre_c = c
+      index = sorted_s.index(c)
+      sorted_s = sorted_s[index+1:]
+    else:
+      return c
 
 # function to check if a number is armstrong number, assume input number is valid
 # An Armstrong number of three digits is an integer such that the sum of the cubes of its digits is equal to the number itself
@@ -4409,7 +4418,7 @@ class TokenBucket:
         """
         Initialize the Token Bucket rate limiter.
         :param capacity: Maximum number of tokens in the bucket.
-        :param rate: Tokens added per second.
+        :param rate: Tokens added per second (refill rate).
         """
         self.capacity = capacity
         self.tokens = capacity
