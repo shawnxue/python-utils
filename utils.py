@@ -169,6 +169,7 @@ def firstNonAlphabeticOrderChar(s):
       sorted_s = sorted_s[index+1:]
     else:
       return c
+  return "" # means all characters in the string are in alphabetic order
 
 # function to check if a number is armstrong number, assume input number is valid
 # An Armstrong number of three digits is an integer such that the sum of the cubes of its digits is equal to the number itself
@@ -661,7 +662,7 @@ def eraseOverlapIntervals(intervals):
     input = sorted(intervals, key = lambda item: item[1])
     pre_item_end =  -sys.maxsize - 1 # sys.maxsize is the max int in Python 3
     for interval in input:
-        if interval[0] >= pre_item_end:
+        if pre_item_end <= interval[0]: # if the current interval does not overlap with the previous one
             pre_item_end = interval[1]
         else:
             count += 1
@@ -672,6 +673,7 @@ def eraseOverlapIntervals(intervals):
 def inNumber(s):
     #define DFA state transition tables
     states = [
+              # State (0)
               {},
               # State (1) - initial state (scan ahead thru blanks)
               {'blank': 1, 'sign': 2, 'digit':3, '.':4},
@@ -821,9 +823,13 @@ def compareVersion(s1, s2):
     l2 = s2.split(r'.')
     min_len = min(len(l1), len(l2))
     for i in range(min_len):
-        if l1[i] == l2[i]:
+        max_size = max(len(l1[i]), len(l2[i]))
+        first = l1[i].ljust(max_size, '0')  # pad with 0 to the right
+        second = l2[i].ljust(max_size, '0')  # pad with 0 to the right
+        first, second = int(first), int(second)
+        if first == second:
             continue
-        elif l1[i] < l2[i]:
+        elif first < second:
             return -1
         else:
             return 1
