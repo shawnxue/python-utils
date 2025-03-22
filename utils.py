@@ -4726,3 +4726,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+def transfer_arr(arr, start, end):
+    if arr is None:
+        return None
+    n = len(arr)
+    # support negative index
+    start = start if start >=0 else n + start
+    end = end if end >=0 else n + end
+    # support reverse order
+    if start > end:
+        start, end = end, start
