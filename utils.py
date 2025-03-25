@@ -1321,7 +1321,7 @@ def leastRecentlyUsedDesignNew():
         def __init__(self, capacity):
             self.capacity = capacity
             self.cache = set()
-            self.cache_vals = LinkedList() # we can use deque as linkedlist, from collections import deque
+            self.cache_vals = deque() #LinkedList() # we can use deque as linkedlist, from collections import deque
 
         def get(self, value):
             if value not in self.cache:
@@ -1336,20 +1336,24 @@ def leastRecentlyUsedDesignNew():
         def set(self, value):
             node = self.get(value)
             if node == None:
-                if(self.cache_vals.size >= self.capacity):
-                    self.cache_vals.insert_at_tail(value)
+                if(len(self.cache_vals) >= self.capacity):
+                    #self.cache_vals.insert_at_tail(value)
+                    self.cache_vals.append(value)
                     self.cache.add(value)
                     self.cache.remove(self.cache_vals.get_head().data)
-                    self.cache_vals.remove_head()
+                    #self.cache_vals.remove_head()
                 else:
-                    self.cache_vals.insert_at_tail(value)
+                    # self.cache_vals.insert_at_tail(value)
+                    self.cache_vals.append(value)
                     self.cache.add(value)
             else:
                 self.cache_vals.remove(value)
-                self.cache_vals.insert_at_tail(value)
+                # self.cache_vals.insert_at_tail(value)
+                self.cache_vals.append(value)
 
         def printcache(self):
-            node = self.cache_vals.get_head()
+            # node = self.cache_vals.get_head()
+            node = self.cache_vals[0]
             while node != None:
                 print(str(node.data) + ", ")
                 node = node.next
