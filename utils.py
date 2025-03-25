@@ -1327,11 +1327,13 @@ def leastRecentlyUsedDesignNew():
             if value not in self.cache:
                 return None
             else:
-                i = self.cache_vals.get_head()
-                while i is not None:
-                    if i.data == value:
-                        return i
-                    i = i.next
+                i = 0
+                node = self.cache_vals[i]
+                while node is not None:
+                    if node.data == value:
+                        return node
+                    i += 1
+                    self.cache_vals[i]
 
         def set(self, value):
             node = self.get(value)
@@ -1340,7 +1342,7 @@ def leastRecentlyUsedDesignNew():
                     #self.cache_vals.insert_at_tail(value)
                     self.cache_vals.append(value)
                     self.cache.add(value)
-                    self.cache.remove(self.cache_vals.get_head().data)
+                    self.cache.remove(self.cache_vals[0].data)
                     #self.cache_vals.remove_head()
                 else:
                     # self.cache_vals.insert_at_tail(value)
