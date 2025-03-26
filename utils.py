@@ -1629,12 +1629,15 @@ def is_ipv4_2(ip):
     if ip is None:
         return False
     ls = ip.split(".")
-    for g in ls:
-        if len(ls) == 4 and g.isdigit() and str(int(g)) == g and 0<= int(g) <=255:
-            continue
-        else:
-            return False
-    return True
+    if len(ls) == 4:
+        for g in ls:
+            if g.isdigit() and str(int(g)) == g and 0<= int(g) <= 255:
+                continue
+            else:
+                return False
+        return True
+    else:
+        return False
 
 def is_ipv6(ip):
     ls = ip.split(":")
