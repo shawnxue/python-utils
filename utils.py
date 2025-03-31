@@ -2442,8 +2442,9 @@ solution(field, x, y) = [[-1, -1, -1, -1, -1],
                          [-1, 2, 0, 0, 0],
                          [-1, 1, 0, 0, 0]]
 Since the value in the cell (3, 2) is 0, all of its neighboring cells ((2, 1), (2, 2), (2, 3), (3, 1), and (3, 3)) are also revealed. Since the value in the cell (2, 2) is also 0, its neighbouring cells (1, 1), (1, 2) and (1, 3) are revealed, and since the value in cell (2, 3) is 0, its neighbours (1, 4), (2, 4), and (3, 4) are also revealed. The cells (3, 3), (2, 4), and (3, 4) also contain the value 0, but since all of their neighbours have already been revealed, no further action is required.'''
-
 '''
+
+
 Tetris-inspired question
 You are given a matrix of integers field of size height x width representing a game field, and also a matrix of integers figure of size 3 x 3 representing a figure. Both matrices contain only 0s and 1s, where 1 means that the cell is occupied, and 0 means that the cell is free.
 You choose a position at the top of the game field where you put the figure and then drop it down. The figure falls down until it either reaches the ground (bottom of the field) or lands on an occupied cell, which blocks it from falling further. After the figure has stopped falling, some of the rows in the field may become fully occupied.
@@ -4746,3 +4747,64 @@ def transfer_arr(arr, start, end):
     # support reverse order
     if start > end:
         start, end = end, start
+
+'''
+generate a mine sweeper board, randomly place m mines in a h * w array
+'''
+# soution 1: download is that the running time is not predictable
+def generate_minesweeper_board_1(h, w, m):
+    # create an empty board with all cells initialized to 0
+    board = [[0 for _ in range(w)] for _ in range(h)]
+    # another way to initialize
+    # board = []
+    # for i in range(h):
+    #     row = []
+    #     for j in range(w):
+    #         row.append(0)
+    #     board.append(row)
+    mine_pos = set()
+    while len(mine_pos) < m:
+        row, col = random.randint(0, h-1), random.randint(0, w-1)
+        # pair of row and col is unique
+        if (row, col) not in mine_pos:
+            mine_pos.add((row, col))
+    for row, col in mine_pos:
+        board[row][col] = "X"
+
+    # another way to fill the board with mines
+    n = 0
+    while n < m:
+        row, col = random.randint(0, h-1), random.randint(0, w-1)
+        if board[row][col] != "X":
+            board[row][col] = "X"
+            n += 1
+        else:
+            continue
+    return board
+
+# solution 2: use sample function to make sure the pair of row and col is unique
+def generate_minesweeper_board_2(h, w, m):
+    board = [[0 for _ in range(w)] for _ in range(h)]
+    # generate all possible positions in the board
+    all_positions = [(row, col) for row in range(h) for col in range(w)]
+    # randomly sample m unique positions
+    mine_pos = set(random.sample(all_positions, m))
+    for row, col in mine_pos:
+        board[row][col] = "X"
+    return board
+
+# besides putting mines randomly, also update the non-mine tiles to the numbers of mines around them
+def generate_minesweeper_board_3(h, w, m):
+    board = [[0 for _ in range(w)] for _ in range(h)]
+    all_positions = [(row, col) for row in range(h) for col in range(w)]
+    mine_positions = set(random.sample(all_positions, m))
+    for r, c in mine_positions:
+        board[r][c] = "X"
+    # define directions of 8 adjacent cells
+    directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    for r, c in mine_positions:
+        for dx, dy in directions:
+            nr, nc = r + dx, c + dy
+            if 0 <= nr < h and 0 <= nc < w and board[nr][nc] != "X":
+                board[nr][nc] += 1
+    return board
